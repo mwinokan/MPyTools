@@ -14,3 +14,9 @@ def varOut(name, value, unit="",valCol="",printScript=False,end="\n"):
   print(mcol.varName+name+mcol.clear
         +" = "+valCol+f"{value}"+mcol.clear
         +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+
+def warningOut(string,printScript=False,end="\n"):
+  if printScript:
+    thisScript = sys.argv[0]                                    # get name of script
+    print(mcol.func+thisScript+mcol.clear+": ",end='')
+  print(mcol.warning+"Warning: "+string+mcol.clear,flush=True,end=end)
