@@ -17,11 +17,28 @@ def varOut(name, value, unit="",valCol="",precision=8,printScript=False,end="\n"
         +" = "+valCol+valueStr+mcol.clear
         +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
 
-def warningOut(string,printScript=False,end="\n"):
+def warningOut(string,printScript=False,code=None,end="\n"):
   if printScript:
     thisScript = sys.argv[0]                                    # get name of script
     print(mcol.func+thisScript+mcol.clear+": ",end='')
-  print(mcol.warning+"Warning: "+string+mcol.clear,flush=True,end=end)
+  print(mcol.warning+"Warning: "+string,end='')
+  if code is not None: 
+    print(" [code="+str(code)+"]")
+  print(mcol.clear,flush=True,end=end)
+
+def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):
+  if printScript:
+    thisScript = sys.argv[0]                                    # get name of script
+    print(mcol.func+thisScript+mcol.clear+": ",end='')
+  if fatal:
+    prefix = "Fatal Error: "
+  else:
+    prefix = "Error: "
+  print(mcol.error+prefix+string+mcol.error,end='')
+  if code is not None: 
+    print(" [code="+str(code)+"]")
+  print(mcol.clear,flush=True,end=end)
+  if fatal: exit()
 
 def toPrecision(x,p):
     """

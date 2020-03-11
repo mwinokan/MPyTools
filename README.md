@@ -2,18 +2,113 @@
 
 Set of custom python packages for various odds and ends.
 
-- ```mcol``` defines a set of colours as ANSI escape strings.
-- ```mout``` provides a set of functions for formatted console output.
-- ```module``` provides the module() function that calls lmod to persistently load softare on EUREKA.
-- `mplot` provides a variety of plotting functions using matplotlib.
+- [mcol](#mcol) defines a set of colours as ANSI escape strings.
+- [module](#module) provides the module() function that calls lmod to persistently load softare on EUREKA.
+- [mout](#mout) provides a set of functions for formatted console output.
+- [mplot](#mplot) provides a variety of plotting functions using matplotlib.
 
-## Requirements
+## mcol
 
-- `mplot` requires `matplotlib`
+Provides ANSI escape strings for colourised terminal output that fits into a colour scheme. I.e. green success messages, red errors, orange warnings, yellow filenames etc...
 
-## Usage
+For example to output an error message: 
 
-### mplot
+```
+import mcol
+print(mcol.error + "Error: Something went wrong!" + mcol.clear)
+```
+
+Please note that for most cases the functions in [mout](#mout) will achieve the same functionality with less code:
+
+```
+import mout
+mout.errorOut("Something went wrong!")
+```
+
+Colour strings in the scheme: 
+
+*   `varName` Variable names, turqoise
+*   `varType` Variable types/units, pink
+*   `func` Function/script name, underlined turqoise
+*   `file` Filename/path, yellow
+*   `error` For error messages, bold red
+*   `success` For success messages, bold green
+*   `warning` For warning messages, bold green
+*   `result` For results/variable values, blue
+*   `arg` For function arguments, lime
+
+General colour strings:
+
+*   `clear`
+*   `bold`
+*   `inverse`
+*   `underline`
+
+*   `red`
+*   `green`
+*   `yellow`
+
+## module
+
+Access the unix `modulecmd` from within python. Load and unload packages, which will persist so that subsequest `exec()` or `os.system()` commands will see them. Comma delimited arguments instead of spaces:
+
+```
+import module
+module.module('load','lammps/2018/mpi+intel-xe_2017_3')
+```
+
+## mout
+
+Write formatted output to the console.
+
+*General console message*
+
+`mout.out(string,printScript=False,end="\n")`
+
+*   `string` The message to be displayed
+*   `printScript` Prepend the output with the name of the script?
+*   `end` End the output with this string.
+
+*Output a variable and its value*
+
+`def varOut(name, value, unit="",valCol="",precision=8,printScript=False,end="\n")`
+
+*   `name` The name of the variable
+*   `value` Value of the variable
+*   `unit` Unit string for the variable
+*   `valCol` Custom colour string for the value
+*   `precision` Significant figures of the value output
+*   `printScript` Prepend the output with the name of the script?
+*   `end` End the output with this string.
+
+*Warning message*
+
+`def warningOut(string,printScript=False,code=None,end="\n")`
+
+*   `string` The message to be displayed
+*   `printScript` Prepend the output with the name of the script?
+*   `code` The warning code
+*   `end` End the output with this string.
+
+*Error message*
+
+`def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):`
+
+*   `string` The message to be displayed
+*   `printScript` Prepend the output with the name of the script?
+*   `fatal` Exit the script?
+*   `code` The warning code
+*   `end` End the output with this string.
+
+## mplot
+
+Functions for plotting data using [matplotlib](#https://matplotlib.org).
+
+### Requirements
+
+`mplot` requires `matplotlib`
+
+### Usage
 
 *Plotting 2D data:*
 
