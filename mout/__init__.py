@@ -5,3 +5,5 @@ from .output import errorOut
 from .output import toPrecision # documentation missing
 
 from .ase import printEnergy # to be moved to AMP
+
+from .progress import progress
