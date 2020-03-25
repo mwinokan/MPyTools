@@ -2,8 +2,8 @@
 import mcol # https://github.com/mwinokan/MPyTools
 import mout # https://github.com/mwinokan/MPyTools
 
-import matplotlib
-matplotlib.use("tkagg")
+# import matplotlib
+# matplotlib.use("tkagg")
 import matplotlib.pyplot as plt
 
 import numpy as np
