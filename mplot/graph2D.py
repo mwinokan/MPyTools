@@ -11,12 +11,11 @@ import numpy as np
 """
 
   To-Do's
-    * Average (constfit), Running Averages
     * Close after saving argument?
 
 """
 
-def graph2D(xdata,ydata,ytitles=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2):
+def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None):
 
   plt.figure()
 
@@ -25,31 +24,142 @@ def graph2D(xdata,ydata,ytitles=None,filename=None,show=True,xmin=None,xmax=None
       mout.out("graphing "+mcol.varName+
                title+
                mcol.clear+" ... ",
-               printScript=True,
+               printScript=printScript,
                end='')
     else:
       mout.out("graphing ... ",
-               printScript=True,
+               printScript=printScript,
                end='')
 
   many = any(isinstance(el,list) for el in ydata)
 
+  # plot the normal data
   if many:
     # ydata is a list of lists!
     if ytitles is not None:
-      for curve, label in zip(ydata,ytitles):
-        plt.plot(xdata,curve,label=label)
+      # for curve, label in zip(ydata,ytitles):
+      for index, curve in enumerate(ydata):
+
+        if ytitles[index] is None:
+          label = "ydata["+str(index)+"]"
+        else:
+          label = ytitles[index]
+
+        if style is None or style[index] is None:
+          if colour is None or colour[index] is None:
+            plt.plot(xdata,curve,label=label)
+          else:
+            plt.plot(xdata,curve,colour[index],label=label)
+        elif style[index] == "bar":
+          if colour is None or colour[index] is None:
+            plt.bar(xdata,curve,align='center',label=label,alpha=alpha)
+          else:
+            plt.bar(xdata,curve,align='center',label=label,color=colour[index],alpha=alpha)
+        else:
+          if colour is None or colour[index] is None:
+            plt.plot(xdata,curve,style[index],label=label)
+          else:
+            plt.plot(xdata,curve,colour[index]+style[index],label=label)
     else:
-      for i,curve in enumerate(ydata):
-        plt.plot(xdata,curve,label="ydata["+str(i)+"]")
+      for index, curve in enumerate(ydata):
+        if style is None or style[index] is None:
+          if colour is None or colour[index] is None:
+            plt.plot(xdata,curve,label="ydata["+str(index)+"]")
+          else:
+            plt.plot(xdata,curve,colour[index],label="ydata["+str(index)+"]")
+        elif style[index] == "bar":
+          if colour is None or colour[index] is None:
+            plt.bar(xdata,curve,align='center',label="ydata["+str(index)+"]",alpha=alpha)
+          else:
+            plt.bar(xdata,curve,colour[index],align='center',label="ydata["+str(index)+"]",alpha=alpha)
+        else:
+          if colour is None or colour[index] is None:
+            plt.plot(xdata,curve,style[index],label="ydata["+str(index)+"]")
+          else:
+            plt.plot(xdata,curve,colour[index]+style[index],label="ydata["+str(index)+"]")
+
   else: 
+    if colour is None:
+      colour = "k"
+      alpha = 0.5
     # ydata is just a list!
-    plt.plot(xdata,ydata)
+    if style is None:
+      plt.plot(xdata,ydata,colour)
+    elif style == "bar":
+      plt.bar(xdata,ydata,color=colour,align='center',alpha=alpha)
+    else:
+      plt.plot(xdata,ydata,colour+style)
+
+  # plot the yerrorbars
+  if yerrors is not None:
+    if many:
+      for index, curve in enumerate(ydata):
+        if yerrors[index] is not None:
+          if style == "bar":
+            this_colour = "k"
+          if colour is None or colour[index] is None:
+            this_colour = None
+          else:
+            this_colour = colour[index]
+
+          if colour is None or colour[index] is None:
+            plt.errorbar(xdata,curve,yerrors[index],fmt='none',capsize=3,capwidth=2,color='C'+str(index))
+          else:
+            plt.errorbar(xdata,curve,yerrors[index],fmt='none',capsize=3,capwidth=2,color=colour[index])
+
+    else:
+      if style == "bar":
+        colour = "k"
+      if colour is None:
+        plt.errorbar(xdata,ydata,yerrors,fmt='none',capsize=3,capwidth=2,color='C'+str(index),colour="k")
+      else:
+        plt.errorbar(xdata,ydata,yerrors,fmt='none',color=colour,capsize=3,capwidth=2)
+  # plot the xerrorbars
+  if xerrors is not None:
+    if many:
+      print("do something complicated")
+      for index, curve in enumerate(ydata):
+        if xerrors[index] is not None:
+          if style == "bar":
+            this_colour = "k"
+          if colour is None or colour[index] is None:
+            this_colour = None
+          else:
+            this_colour = colour[index]
+
+          if colour is None or colour[index] is None:
+            plt.errorbar(xdata,curve,xerr=xerrors[index],fmt='none',capsize=3,capwidth=2,color='C'+str(index))
+          else:
+            plt.errorbar(xdata,curve,xerr=xerrors[index],fmt='none',capsize=3,capwidth=2,color=colour[index])
+
+    else:
+      if style == "bar":
+        colour = "k"
+      if colour is None:
+        plt.errorbar(xdata,ydata,xerr=xerrors,fmt='none',capsize=3,capwidth=2,color='C'+str(index))
+      else:
+        plt.errorbar(xdata,ydata,xerr=xerrors,fmt='none',color=colour,capsize=3,capwidth=2)
+
+  # plot the fitting function
+  if fitFunc is not None:
+    if fitTitle is None:
+      plt.plot(xdata,fitFunc(xdata),'k--',label="f(x) "+str(fitFunc))
+    else:
+      plt.plot(xdata,fitFunc(xdata),'k--',label=fitTitle)
 
   plt.axis([xmin,xmax,ymin,ymax])
   plt.xlabel(xlab)
   plt.ylabel(ylab)
   plt.suptitle(title)
+
+  if xticrot != None:
+    plt.xticks(rotation=xticrot)
+
+  if xticsize != None:
+    plt.xticks(fontsize=xticsize)
+
+  if subtitle is not None:
+    plt.figtext(0.5,0.91,subtitle,horizontalalignment='center')
 
   if many:
     plt.legend()
@@ -66,3 +176,12 @@ def graph2D(xdata,ydata,ytitles=None,filename=None,show=True,xmin=None,xmax=None
 
   if (verbosity > 1):
     mout.out("Done.")
+
+def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None):
+
+  many = any(isinstance(el,list) for el in ydata)
+
+  if style is None and not many:
+    style = "bar"
+
+  graph2D(xdata,ydata,fitFunc,printScript,ytitles,fitTitle,style,filename,show,xmin,xmax,ymin,ymax,xlab,ylab,title,verbosity,subtitle,colour,yerrors,xerrors,alpha,xticrot,xticsize)
