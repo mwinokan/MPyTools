@@ -1,6 +1,8 @@
 import mcol
 import sys                                    # sys.argv
 
+from .convert import toPrecision
+
 def out(string,printScript=False,colour="",end="\n"):
   if printScript:
     thisScript = sys.argv[0]                                    # get name of script
