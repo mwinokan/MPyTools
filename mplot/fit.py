@@ -90,6 +90,10 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",precision=4,er
   # get the resulting fit function
   fit_func = np.poly1d(coeffs)
 
+  if rank == 0:
+    vals=vals[0]
+    errs=errs[0]
+
   # return the necessary
   return vals, errs, fit_func
 
