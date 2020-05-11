@@ -57,3 +57,11 @@ def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):
     print(" [code="+str(code)+"]")
   print(mcol.clear,flush=True,end=end)
   if fatal: exit()
+
+def successOut(string,printScript=False,prefix=None,end="\n"):
+  if printScript:
+    thisScript = sys.argv[0]                                    # get name of script
+    print(mcol.func+thisScript+mcol.clear+":",end=' ')
+  if prefix is not None:
+    print(mcol.success+prefix,end=' ')
+  print(mcol.success+string+mcol.clear,flush=True,end=end)

@@ -3,6 +3,7 @@ from .output import varOut
 from .output import headerOut
 from .output import warningOut
 from .output import errorOut
+from .output import successOut
 
 from .progress import progress
 
