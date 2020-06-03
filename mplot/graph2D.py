@@ -15,9 +15,9 @@ import numpy as np
 
 """
 
-def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None):
+def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None,xSci=False,ySci=False):
 
-  plt.figure()
+  graph = plt.figure()
 
   if (verbosity > 1):
     if title is not None:
@@ -90,6 +90,11 @@ def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
     else:
       plt.plot(xdata,ydata,colour+style)
 
+  if xSci:
+    plt.ticklabel_format(axis='x',style='sci',scilimits=(0,0))
+  if ySci:
+    plt.ticklabel_format(axis='y',style='sci',scilimits=(0,0))
+
   # plot the yerrorbars
   if yerrors is not None:
     if many:
@@ -117,7 +122,6 @@ def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
   # plot the xerrorbars
   if xerrors is not None:
     if many:
-      print("do something complicated")
       for index, curve in enumerate(ydata):
         if xerrors[index] is not None:
           if style == "bar":
@@ -177,11 +181,11 @@ def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
   if (verbosity > 1):
     mout.out("Done.")
 
-def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None):
+def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None,xSci=False,ySci=False):
 
   many = any(isinstance(el,list) for el in ydata)
 
   if style is None and not many:
     style = "bar"
 
-  graph2D(xdata,ydata,fitFunc,printScript,ytitles,fitTitle,style,filename,show,xmin,xmax,ymin,ymax,xlab,ylab,title,verbosity,subtitle,colour,yerrors,xerrors,alpha,xticrot,xticsize)
+  graph2D(xdata,ydata,fitFunc=fitFunc,printScript=printScript,ytitles=ytitles,fitTitle=fitTitle,style=style,filename=filename,show=show,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax,xlab=xlab,ylab=ylab,title=title,verbosity=verbosity,subtitle=subtitle,colour=colour,yerrors=yerrors,xerrors=xerrors,alpha=alpha,xticrot=xticrot,xticsize=xticsize,ySci=ySci)
