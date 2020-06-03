@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import string
 
-def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",precision=4,errorPrecision=2,xUnit="",yUnit=""):
+def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fitMax=None,precision=4,errorPrecision=2,xUnit="",yUnit=""):
 
   # if there are nested ydatas:
   many = any(isinstance(el,list) for el in ydata)
@@ -17,18 +17,28 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",precision=4,er
   # initialise arrays
   combined_xdata=[]
   combined_ydata=[]
+  combined_data=[]
 
   # check if multiple ydata sets
   if not many:
     # if just one set of data
-    combined_xdata=xdata
-    combined_ydata=ydata
+    for index,xpoint in enumerate(xdata):
+      if fitMin is not None and xpoint < fitMin:
+        continue
+      if fitMax is not None and xpoint > fitMax:
+        break
+      combined_xdata.append(xpoint)
+      combined_ydata.append(ydata[index])
   else:
     # loop over ydata sets
     for data in ydata:
-      for index,element in enumerate(data):
+      for index,ypoint in enumerate(data):
+        if fitMin is not None and xdata[index] < fitMin:
+          continue
+        if fitMax is not None and xdata[index] > fitMax:
+          break
         combined_xdata.append(xdata[index])
-        combined_ydata.append(element)
+        combined_ydata.append(ypoint)
   
   # get the number of datapoints
   num_points=len(combined_ydata)
@@ -41,6 +51,10 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",precision=4,er
              str(num_points)+" points) "+
              mcol.clear+"...",
              printScript=printScript,end=' ')
+    if fitMin is not None or fitMax is not None:
+      mout.out("fitrange=["+str(fitMin)+":"+str(fitMax)+"]",
+               printScript=False,end=' ')
+
 
   # the actual fitting:
   coeffs,variance = np.polyfit(combined_xdata,combined_ydata,rank,cov=True)
