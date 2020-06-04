@@ -9,31 +9,47 @@ def out(string,printScript=False,colour="",end="\n"):
     print(mcol.func+thisScript+mcol.clear+": ",end='')
   print(colour+string+mcol.clear,flush=True,end=end)
 
-def headerOut(string,printScript=False,prefix=None,end="\n"):
-  if printScript:
-    thisScript = sys.argv[0]                                    # get name of script
-    print(mcol.func+thisScript+mcol.clear+":",end=' ')
-  if prefix is not None:
-    print(mcol.bold+prefix,end=' ')
-  print(mcol.bold+string+mcol.clear,flush=True,end=end)
+def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbosity=1):
+  if verbosity > 0:
+    if printScript:
+      thisScript = sys.argv[0]                                    # get name of script
+      print(mcol.func+thisScript+mcol.clear+":",end=' ')
+    if prefix is not None:
+      print(mcol.bold+prefix,end=' ')
+    print(mcol.bold+string+mcol.clear,flush=True,end=end)
 
-def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n"):
-  if printScript:
-    thisScript = sys.argv[0]                                    # get name of script
-    print(mcol.func+thisScript+mcol.clear+": ",end='')
+  if dataFile is not None:
+    dataFile.write("# ")
+    if prefix is not None:
+      dataFile.write(prefix)
+    dataFile.write(string)
+    dataFile.write('\n')
 
-  valueStr = toPrecision(value,precision)
-  
-  if error is None:
-    print(mcol.varName+name+mcol.clear
-          +" = "+valCol+valueStr+mcol.clear
-          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
-  else:
-    errorStr = toPrecision(error,errorPrecision)
-    print(mcol.varName+name+mcol.clear
-          +" = "+valCol+valueStr+mcol.clear
-          +" +/- "+valCol+errorStr+mcol.clear
-          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1):
+  if verbosity > 0:
+    if printScript:
+      thisScript = sys.argv[0]                                    # get name of script
+      print(mcol.func+thisScript+mcol.clear+": ",end='')
+
+    valueStr = toPrecision(value,precision)
+    
+    if error is None:
+      print(mcol.varName+name+mcol.clear
+            +" = "+valCol+valueStr+mcol.clear
+            +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+    else:
+      errorStr = toPrecision(error,errorPrecision)
+      print(mcol.varName+name+mcol.clear
+            +" = "+valCol+valueStr+mcol.clear
+            +" +/- "+valCol+errorStr+mcol.clear
+            +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+
+  if dataFile is not None:
+    if error is None:
+      dataFile.write(name+", "+str(value)+", "+unit)
+    else:
+      dataFile.write(name+", "+str(value)+", "+str(error)+", "+unit)
+    dataFile.write('\n')
 
 def warningOut(string,printScript=False,code=None,end="\n"):
   if printScript:
