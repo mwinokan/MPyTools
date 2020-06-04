@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import string
 
-def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fitMax=None,precision=4,errorPrecision=2,xUnit="",yUnit=""):
+def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fitMax=None,precision=4,errorPrecision=2,xUnit="",yUnit="",dataFile=None):
 
   # if there are nested ydatas:
   many = any(isinstance(el,list) for el in ydata)
@@ -93,13 +93,12 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fi
 
   for i in range(rank,-1,-1):
     # write out the results
-    if verbosity > 0:
-      unitString=yUnit
-      if i == 1:
-        unitString = unitString+"/("+xUnit+")"
-      elif i > 1:
-        unitString = unitString+"/("+xUnit+"^"+str(i)+")"
-      mout.varOut(alphabet_list[rank-i],vals[i],unit=unitString,error=errs[i],valCol=mcol.result,precision=precision,errorPrecision=errorPrecision,printScript=printScript)
+    unitString=yUnit
+    if i == 1:
+      unitString = unitString+"/("+xUnit+")"
+    elif i > 1:
+      unitString = unitString+"/("+xUnit+"^"+str(i)+")"
+    mout.varOut(alphabet_list[rank-i],vals[i],unit=unitString,error=errs[i],valCol=mcol.result,precision=precision,errorPrecision=errorPrecision,printScript=printScript,dataFile=dataFile,verbosity=verbosity)
 
   # get the resulting fit function
   fit_func = np.poly1d(coeffs)
