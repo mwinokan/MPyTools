@@ -112,7 +112,12 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fi
 
 def getCoeffStr(vals,errs,order,xUnit="",yUnit="",precision=4,errorPrecision=2):
 
-  rank = len(vals)
+  try:
+    rank = len(vals)
+    is_rank0=False
+  except:
+    rank = 0
+    is_rank0=True
 
   unitString=yUnit
   if order == 1:
@@ -120,8 +125,12 @@ def getCoeffStr(vals,errs,order,xUnit="",yUnit="",precision=4,errorPrecision=2):
   elif order > 1:
     unitString = unitString+"/("+xUnit+"^"+str(order)+")"
   
-  valueStr = mout.toPrecision(vals[rank-order],precision)
-  errorStr = mout.toPrecision(errs[rank-order],errorPrecision)
+  if not is_rank0:
+    valueStr = mout.toPrecision(vals[rank-order],precision)
+    errorStr = mout.toPrecision(errs[rank-order],errorPrecision)
+  else:
+    valueStr = mout.toPrecision(vals,precision)
+    errorStr = mout.toPrecision(errs,precision)
 
   string = valueStr + " +/- " + errorStr + " " + unitString
 
