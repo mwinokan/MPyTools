@@ -19,7 +19,7 @@ def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
 
   graph = plt.figure()
 
-  if (verbosity > 1):
+  if (verbosity > 0):
     if title is not None:
       mout.out("graphing "+mcol.varName+
                title+
@@ -169,7 +169,7 @@ def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
     plt.legend()
 
   if show:
-    if (verbosity > 0):
+    if (verbosity > 1):
       mout.out("showing ... ",end='')
     plt.show()
 
@@ -177,8 +177,9 @@ def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
     if (verbosity > 0):
       mout.out("saving as " + mcol.file + filename + mcol.clear + " ... ",end='')
     plt.savefig(filename)
-
-  if (verbosity > 1):
+    plt.close(fig=graph)
+  
+  if (verbosity > 0):
     mout.out("Done.")
 
 def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None,xSci=False,ySci=False):
