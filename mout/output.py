@@ -31,7 +31,10 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
       thisScript = sys.argv[0]                                    # get name of script
       print(mcol.func+thisScript+mcol.clear+": ",end='')
 
-    valueStr = toPrecision(value,precision)
+    if type(value) is str:
+      valueStr = value
+    else:
+      valueStr = toPrecision(value,precision)
     
     if error is None:
       print(mcol.varName+name+mcol.clear
