@@ -9,3 +9,5 @@ from .progress import progress
 
 from .convert import toPrecision # documentation missing
 from .convert import str2bool # documentation missing
+
+from .fileio import append2file # documentation missing
