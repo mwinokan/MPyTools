@@ -33,6 +33,8 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
 
     if type(value) is str:
       valueStr = value
+    elif isinstance(value,bool):
+      valueStr = str(value)
     else:
       valueStr = toPrecision(value,precision)
     
