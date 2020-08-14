@@ -1,9 +1,24 @@
+
+# # _ACTIVE_PROGRESS_ = False
+# ###
+
+# import sys
+
+# # this is a pointer to the module object instance itself.
+# this = sys.modules[__name__]
+
+# # we can explicitly make assignments on it 
+# this._ACTIVE_PROGRESS_ = False
+
+# ###
+
 from .output import out
 from .output import varOut
 from .output import headerOut
 from .output import warningOut
 from .output import errorOut
 from .output import successOut
+from .output import differenceOut
 
 from .progress import progress
 

@@ -3,7 +3,19 @@ import mcol # https://github.com/mwinokan/MPyTools
 import math
 import sys
 
-def progress(current,maximum,prepend=None,append="",width=20,fill="#",printScript=False):
+_ACTIVE_PROGRESS_ = False
+
+def progress(current,maximum,reverse=False,prepend=None,append="",width=20,fill="#",printScript=False):
+
+  global _ACTIVE_PROGRESS_
+
+  if reverse:
+    current = maximum - current
+  if current/maximum >= 1.00:
+    _ACTIVE_PROGRESS_ = False
+    current = maximum
+  else:
+    _ACTIVE_PROGRESS_ = True
   percentage = mcol.result + "{:>6.2f}%".format(current/maximum*100) + mcol.clear
   if prepend is not None: 
     prepend = mcol.varName + prepend + mcol.clear + " = "
