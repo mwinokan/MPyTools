@@ -8,6 +8,17 @@ def toPrecision(x,p,sf=True):
     https://code.google.com/p/webkit-mirror/source/browse/JavaScriptCore/kjs/number_object.cpp
     """
 
+    if isinstance(x,list):
+        out_list = []
+        for item in x:
+            out_list.append(toPrecision(item,p,sf=sf))
+        return str(out_list).replace("'","")
+
+    try:
+        x = float(x)
+    except ValueError:
+        return x
+
     if sf:
         x = float(x)
 
@@ -61,9 +72,10 @@ def toPrecision(x,p,sf=True):
 
         return "".join(out)
     else:
-        return "{:.2f}".format(round(x,p))
+        format_str = "{:."+str(p)+"f}"
+        return format_str.format(round(x,p))
 
-def str2bool(v): # Move to MPyTools
+def str2bool(v):
     if isinstance(v, bool):
        return v
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
