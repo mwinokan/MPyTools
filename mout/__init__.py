@@ -15,6 +15,7 @@
 from .output import out
 from .output import varOut
 from .output import headerOut
+from .output import debugOut
 from .output import warningOut
 from .output import errorOut
 from .output import successOut
