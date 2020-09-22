@@ -2,8 +2,15 @@
 import mcol # https://github.com/mwinokan/MPyTools
 import mout # https://github.com/mwinokan/MPyTools
 
-# import matplotlib
 # matplotlib.use("tkagg")
+
+import matplotlib as mpl
+import os
+if "scarf" in os.popen("hostname").read():
+  if not "ui3" in os.popen("hostname").read():
+    # print("Using agg for Matplotlib")
+    mpl.use('agg')
+
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -15,7 +22,25 @@ import numpy as np
 
 """
 
-def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None,xSci=False,ySci=False):
+def graph2D(xdata,ydata,
+            fitFunc=None,
+            printScript=False,
+            ytitles=None,fitTitle=None,
+            style=None,
+            filename=None,
+            show=True,
+            xmin=None,xmax=None,
+            ymin=None,ymax=None,
+            xlab='x',ylab='y',
+            title=None,
+            subtitle=None,
+            verbosity=2,
+            colour=None,
+            yerrors=None,xerrors=None,
+            alpha=1.0,
+            xticrot=None,xticsize=None,
+            xSci=False,ySci=False,
+            xLog=False,yLog=False):
 
   graph = plt.figure()
 
@@ -155,6 +180,11 @@ def graph2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
   plt.xlabel(xlab)
   plt.ylabel(ylab)
   plt.suptitle(title)
+
+  if xLog:
+    plt.xscale('log')
+  if yLog:
+    plt.yscale('log')
 
   if xticrot != None:
     plt.xticks(rotation=xticrot)
