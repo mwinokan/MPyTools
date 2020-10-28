@@ -1,5 +1,6 @@
 red="\033[31m"
 green="\033[32m"
+lilac="\033[34m"
 yellow="\033[33m"
 bold="\033[1m"
 clear="\033[0m"
@@ -15,3 +16,4 @@ success="\033[32;1m"
 result="\033[38;5;27m"
 warning="\033[38;5;166m"
 arg="\033[38;5;154m"
+debug=lilac
