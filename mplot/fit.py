@@ -14,6 +14,8 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fi
   # if there are nested ydatas:
   many = any(isinstance(el,list) for el in ydata)
 
+  if title is None: title = ""
+
   # initialise arrays
   combined_xdata=[]
   combined_ydata=[]
