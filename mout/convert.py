@@ -61,7 +61,8 @@ def toPrecision(x,p,sf=True):
 
         return "".join(out)
     else:
-        return "{:.2f}".format(round(x,p))
+        # return "{:.2f}".format(round(x,p+1))
+        return str(round(x,p))
 
 def str2bool(v): # Move to MPyTools
     if isinstance(v, bool):
