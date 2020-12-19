@@ -18,6 +18,8 @@ def toPrecision(x,p,sf=True):
         x = float(x)
     except ValueError:
         return x
+    except TypeError:
+        return x
 
     if sf:
         x = float(x)
