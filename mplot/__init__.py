@@ -16,6 +16,7 @@ from .main import closeAll
 
 from .graph2D import graph2D
 from .graph2D import chart2D
+from .graph2D import hist2D
 
 from .fit import fit
 from .fit import getCoeffStr

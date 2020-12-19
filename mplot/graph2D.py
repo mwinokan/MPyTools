@@ -40,9 +40,10 @@ def graph2D(xdata,ydata,
             alpha=1.0,
             xticrot=None,xticsize=None,
             xSci=False,ySci=False,
-            xLog=False,yLog=False):
+            xLog=False,yLog=False,
+            dpi=100,figsize=[6.4, 4.8]):
 
-  graph = plt.figure()
+  graph = plt.figure(dpi=dpi,figsize=figsize)
 
   if (verbosity > 0):
     if title is not None:
@@ -104,16 +105,29 @@ def graph2D(xdata,ydata,
             plt.plot(xdata,curve,colour[index]+style[index],label="ydata["+str(index)+"]")
 
   else: 
+    if ytitles is not None:
+      label = ytitles
+      print(label)
+    else:
+      label = None
     if colour is None:
       colour = "k"
       alpha = 0.5
     # ydata is just a list!
-    if style is None:
-      plt.plot(xdata,ydata,colour)
-    elif style == "bar":
-      plt.bar(xdata,ydata,color=colour,align='center',alpha=alpha)
+    if label is not None:
+      if style is None:
+        plt.plot(xdata,ydata,colour,label=label)
+      elif style == "bar":
+        plt.bar(xdata,ydata,color=colour,label=label,align='center',alpha=alpha)
+      else:
+        plt.plot(xdata,ydata,colour+style,label=label)
     else:
-      plt.plot(xdata,ydata,colour+style)
+      if style is None:
+        plt.plot(xdata,ydata,colour)
+      elif style == "bar":
+        plt.bar(xdata,ydata,color=colour,align='center',alpha=alpha)
+      else:
+        plt.plot(xdata,ydata,colour+style)
 
   if xSci:
     plt.ticklabel_format(axis='x',style='sci',scilimits=(0,0))
@@ -195,7 +209,7 @@ def graph2D(xdata,ydata,
   if subtitle is not None:
     plt.figtext(0.5,0.91,subtitle,horizontalalignment='center')
 
-  if many:
+  if many or ytitles is not None:
     plt.legend()
 
   if show:
@@ -220,3 +234,48 @@ def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
     style = "bar"
 
   graph2D(xdata,ydata,fitFunc=fitFunc,printScript=printScript,ytitles=ytitles,fitTitle=fitTitle,style=style,filename=filename,show=show,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax,xlab=xlab,ylab=ylab,title=title,verbosity=verbosity,subtitle=subtitle,colour=colour,yerrors=yerrors,xerrors=xerrors,alpha=alpha,xticrot=xticrot,xticsize=xticsize,ySci=ySci)
+
+def hist2D(xdata,ydata,
+           bins=10,
+           xlab='x',ylab='y',
+           title=None,
+           filename=None,
+           show=True,
+           verbosity=2,density=False,
+           printScript=False,
+           range=None):
+
+  if (verbosity > 0):
+    if title is not None:
+      mout.out("graphing "+mcol.varName+
+               title+
+               mcol.clear+" ... ",
+               printScript=printScript,
+               end='')
+    else:
+      mout.out("graphing ... ",
+               printScript=printScript,
+               end='')
+
+  many = any(isinstance(el,list) for el in ydata)
+
+  assert not many
+
+  plt.hist2d(xdata,ydata,bins=bins,range=range,density=density)
+
+  plt.xlabel(xlab)
+  plt.ylabel(ylab)
+  plt.suptitle(title)
+
+  if show:
+    plt.show()
+
+  if filename is not None:
+    if (verbosity > 0):
+      mout.out("saving as " + mcol.file + filename + mcol.clear + " ... ",end='')
+    plt.savefig(filename)
+
+  plt.close()
+
+  if (verbosity > 0):
+    mout.out("Done.")
