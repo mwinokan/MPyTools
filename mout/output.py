@@ -30,7 +30,10 @@ def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbos
 def debugOut(string):
   headerOut(string,prefix=mcol.debug+">>>")
 
-def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1,sf=True):
+def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1,sf=True,list_length=True):
+  
+  nameStr = mcol.varName+name+mcol.clear
+
   if verbosity > 0:
     if printScript:
       thisScript = sys.argv[0]                                    # get name of script
@@ -42,23 +45,25 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
       valueStr = str(value)
     elif isinstance(value,list):
       valueStr = toPrecision(value,precision,sf=sf)
+      nameStr += "[#="+str(len(value))+"]"
     elif isinstance(value,np.ndarray):
       if np.ndim(value) != 1:
         valueStr = str(value)
       else:
         valueStr = toPrecision(list(value),precision,sf=sf)
+        nameStr += "[#="+str(len(value))+"]"
     elif type(value) is int:
       valueStr = str(value)
     else:
       valueStr = toPrecision(value,precision,sf=sf)
     
     if error is None:
-      print(mcol.varName+name+mcol.clear
+      print(nameStr
             +" = "+valCol+valueStr+mcol.clear
             +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
     else:
       errorStr = toPrecision(error,errorPrecision,sf=sf)
-      print(mcol.varName+name+mcol.clear
+      print(nameStr
             +" = "+valCol+valueStr+mcol.clear
             +" +/- "+valCol+errorStr+mcol.clear
             +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
