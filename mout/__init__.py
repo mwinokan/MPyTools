@@ -27,6 +27,7 @@ from .convert import toPrecision # documentation missing
 from .convert import str2bool # documentation missing
 
 from .fileio import append2file # documentation missing
+from .fileio import write2file # documentation missing
 
 from .print import blockPrint
 from .print import enablePrint
