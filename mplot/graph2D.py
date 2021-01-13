@@ -66,6 +66,8 @@ def graph2D(xdata,ydata,
       # for curve, label in zip(ydata,ytitles):
       for index, curve in enumerate(ydata):
 
+        # print("many!")
+
         if ytitles[index] is None:
           label = "ydata["+str(index)+"]"
         else:
@@ -234,48 +236,3 @@ def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=Non
     style = "bar"
 
   graph2D(xdata,ydata,fitFunc=fitFunc,printScript=printScript,ytitles=ytitles,fitTitle=fitTitle,style=style,filename=filename,show=show,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax,xlab=xlab,ylab=ylab,title=title,verbosity=verbosity,subtitle=subtitle,colour=colour,yerrors=yerrors,xerrors=xerrors,alpha=alpha,xticrot=xticrot,xticsize=xticsize,ySci=ySci)
-
-def hist2D(xdata,ydata,
-           bins=10,
-           xlab='x',ylab='y',
-           title=None,
-           filename=None,
-           show=True,
-           verbosity=2,density=False,
-           printScript=False,
-           range=None):
-
-  if (verbosity > 0):
-    if title is not None:
-      mout.out("graphing "+mcol.varName+
-               title+
-               mcol.clear+" ... ",
-               printScript=printScript,
-               end='')
-    else:
-      mout.out("graphing ... ",
-               printScript=printScript,
-               end='')
-
-  many = any(isinstance(el,list) for el in ydata)
-
-  assert not many
-
-  plt.hist2d(xdata,ydata,bins=bins,range=range,density=density)
-
-  plt.xlabel(xlab)
-  plt.ylabel(ylab)
-  plt.suptitle(title)
-
-  if show:
-    plt.show()
-
-  if filename is not None:
-    if (verbosity > 0):
-      mout.out("saving as " + mcol.file + filename + mcol.clear + " ... ",end='')
-    plt.savefig(filename)
-
-  plt.close()
-
-  if (verbosity > 0):
-    mout.out("Done.")
