@@ -41,9 +41,10 @@ def graph2D(xdata,ydata,
             xticrot=None,xticsize=None,
             xSci=False,ySci=False,
             xLog=False,yLog=False,
-            dpi=100,figsize=[6.4, 4.8]):
+            dpi=100,figsize=[6.4, 4.8],bar_width=0.8,zeroaxis=False):
 
-  graph = plt.figure(dpi=dpi,figsize=figsize)
+  # graph = plt.figure(dpi=dpi,figsize=figsize)
+  graph, axis = plt.subplots(dpi=dpi,figsize=figsize)
 
   if (verbosity > 0):
     if title is not None:
@@ -120,14 +121,14 @@ def graph2D(xdata,ydata,
       if style is None:
         plt.plot(xdata,ydata,colour,label=label)
       elif style == "bar":
-        plt.bar(xdata,ydata,color=colour,label=label,align='center',alpha=alpha)
+        plt.bar(xdata,ydata,color=colour,label=label,align='center',alpha=alpha,width=bar_width)
       else:
         plt.plot(xdata,ydata,colour+style,label=label)
     else:
       if style is None:
         plt.plot(xdata,ydata,colour)
       elif style == "bar":
-        plt.bar(xdata,ydata,color=colour,align='center',alpha=alpha)
+        plt.bar(xdata,ydata,color=colour,align='center',alpha=alpha,width=bar_width)
       else:
         plt.plot(xdata,ydata,colour+style)
 
@@ -197,6 +198,10 @@ def graph2D(xdata,ydata,
   plt.ylabel(ylab)
   plt.suptitle(title)
 
+  if zeroaxis:
+    axis.axhline(y=0, color='k')
+    axis.axvline(x=0, color='k')
+
   if xLog:
     plt.xscale('log')
   if yLog:
@@ -228,11 +233,11 @@ def graph2D(xdata,ydata,
   if (verbosity > 0):
     mout.out("Done.")
 
-def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None,xSci=False,ySci=False):
+def chart2D(xdata,ydata,fitFunc=None,printScript=False,ytitles=None,fitTitle=None,style=None,filename=None,show=True,xmin=None,xmax=None,ymin=None,ymax=None,xlab='x',ylab='y',title=None,verbosity=2,subtitle=None,colour=None,yerrors=None,xerrors=None,alpha=1.0,xticrot=None,xticsize=None,xSci=False,ySci=False,bar_width=0.8):
 
   many = any(isinstance(el,list) for el in ydata)
 
   if style is None and not many:
     style = "bar"
 
-  graph2D(xdata,ydata,fitFunc=fitFunc,printScript=printScript,ytitles=ytitles,fitTitle=fitTitle,style=style,filename=filename,show=show,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax,xlab=xlab,ylab=ylab,title=title,verbosity=verbosity,subtitle=subtitle,colour=colour,yerrors=yerrors,xerrors=xerrors,alpha=alpha,xticrot=xticrot,xticsize=xticsize,ySci=ySci)
+  graph2D(xdata,ydata,fitFunc=fitFunc,printScript=printScript,ytitles=ytitles,fitTitle=fitTitle,style=style,filename=filename,show=show,xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax,xlab=xlab,ylab=ylab,title=title,verbosity=verbosity,subtitle=subtitle,colour=colour,yerrors=yerrors,xerrors=xerrors,alpha=alpha,xticrot=xticrot,xticsize=xticsize,ySci=ySci,bar_width=bar_width)
