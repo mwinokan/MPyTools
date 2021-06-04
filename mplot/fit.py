@@ -14,6 +14,12 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fi
   # if there are nested ydatas:
   many = any(isinstance(el,list) for el in ydata)
 
+  if xdata is None:
+    if many:
+      xdata = [ i for i in range(len(ydata[0])) ]
+    else:
+      xdata = [ i for i in range(len(ydata)) ]
+
   if title is None: title = ""
 
   # initialise arrays
@@ -93,14 +99,15 @@ def fit(xdata,ydata,rank=0,verbosity=1,printScript=False,title="",fitMin=None,fi
     vals.append(coeffs[i])
     errs.append(np.sqrt(variance[i,i]))
 
-  for i in range(rank,-1,-1):
-    # write out the results
-    unitString=yUnit
-    if i == 1:
-      unitString = unitString+"/("+xUnit+")"
-    elif i > 1:
-      unitString = unitString+"/("+xUnit+"^"+str(i)+")"
-    mout.varOut(alphabet_list[rank-i],vals[i],unit=unitString,error=errs[i],valCol=mcol.result,precision=precision,errorPrecision=errorPrecision,printScript=printScript,dataFile=dataFile,verbosity=verbosity)
+  if yUnit != "" and xUnit != "":
+    for i in range(rank,-1,-1):
+      # write out the results
+      unitString=yUnit
+      if i == 1:
+        unitString = unitString+"/("+xUnit+")"
+      elif i > 1:
+        unitString = unitString+"/("+xUnit+"^"+str(i)+")"
+      mout.varOut(alphabet_list[rank-i],vals[i],unit=unitString,error=errs[i],valCol=mcol.result,precision=precision,errorPrecision=errorPrecision,printScript=printScript,dataFile=dataFile,verbosity=verbosity)
 
   # get the resulting fit function
   fit_func = np.poly1d(coeffs)
