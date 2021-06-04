@@ -32,6 +32,9 @@ def debugOut(string):
 
 def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1,sf=True,list_length=True,integer=False):
   
+  assert isinstance(name,str)
+  assert np.array(value).ndim < 2
+
   nameStr = mcol.varName+name+mcol.clear
 
   if integer:
@@ -61,6 +64,9 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     else:
       valueStr = toPrecision(value,precision,sf=sf)
     
+    # print(type(nameStr))
+    # print(type(valueStr))
+
     if error is None:
       print(nameStr
             +" = "+valCol+valueStr+mcol.clear
