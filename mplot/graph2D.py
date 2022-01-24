@@ -25,7 +25,8 @@ import numpy as np
 def graph2D(xdata,ydata,
             fitFunc=None,
             printScript=False,
-            ytitles=None,fitTitle=None,
+            ytitles=None,
+            fitTitle=None,
             style=None,
             filename=None,
             show=True,
@@ -41,7 +42,10 @@ def graph2D(xdata,ydata,
             xticrot=None,xticsize=None,
             xSci=False,ySci=False,
             xLog=False,yLog=False,
-            dpi=100,figsize=[6.4, 4.8],bar_width=0.8,zeroaxis=False,points=None):
+            dpi=100,figsize=[6.4, 4.8],
+            bar_width=0.8,
+            zeroaxis=False,
+            points=None):
 
   # graph = plt.figure(dpi=dpi,figsize=figsize)
   graph, axis = plt.subplots(dpi=dpi,figsize=figsize)
@@ -181,17 +185,17 @@ def graph2D(xdata,ydata,
             this_colour = colour[index]
 
           if colour is None or colour[index] is None:
-            plt.errorbar(xdata,curve,yerrors[index],fmt='none',capsize=3,capwidth=2,color='C'+str(index))
+            plt.errorbar(xdata,curve,yerrors[index],fmt='none',capsize=3,capthick=2,color='C'+str(index))
           else:
-            plt.errorbar(xdata,curve,yerrors[index],fmt='none',capsize=3,capwidth=2,color=colour[index])
+            plt.errorbar(xdata,curve,yerrors[index],fmt='none',capsize=3,capthick=2,color=colour[index])
 
     else:
       if style == "bar":
         colour = "k"
       if colour is None:
-        plt.errorbar(xdata,ydata,yerrors,fmt='none',capsize=3,capwidth=2,color='C'+str(index),colour="k")
+        plt.errorbar(xdata,ydata,yerrors,fmt='none',capsize=3,capthick=2,color='C'+str(index),colour="k")
       else:
-        plt.errorbar(xdata,ydata,yerrors,fmt='none',color=colour,capsize=3,capwidth=2)
+        plt.errorbar(xdata,ydata,yerrors,fmt='none',color=colour,capsize=3,capthick=2)
   # plot the xerrorbars
   if xerrors is not None:
     if y_many:
@@ -205,17 +209,17 @@ def graph2D(xdata,ydata,
             this_colour = colour[index]
 
           if colour is None or colour[index] is None:
-            plt.errorbar(xdata,curve,xerr=xerrors[index],fmt='none',capsize=3,capwidth=2,color='C'+str(index))
+            plt.errorbar(xdata,curve,xerr=xerrors[index],fmt='none',capsize=3,capthick=2,color='C'+str(index))
           else:
-            plt.errorbar(xdata,curve,xerr=xerrors[index],fmt='none',capsize=3,capwidth=2,color=colour[index])
+            plt.errorbar(xdata,curve,xerr=xerrors[index],fmt='none',capsize=3,capthick=2,color=colour[index])
 
     else:
       if style == "bar":
         colour = "k"
       if colour is None:
-        plt.errorbar(xdata,ydata,xerr=xerrors,fmt='none',capsize=3,capwidth=2,color='C'+str(index))
+        plt.errorbar(xdata,ydata,xerr=xerrors,fmt='none',capsize=3,capthick=2,color='C'+str(index))
       else:
-        plt.errorbar(xdata,ydata,xerr=xerrors,fmt='none',color=colour,capsize=3,capwidth=2)
+        plt.errorbar(xdata,ydata,xerr=xerrors,fmt='none',color=colour,capsize=3,capthick=2)
 
   # plot extra points:
   if points is not None:
