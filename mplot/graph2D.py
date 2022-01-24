@@ -42,6 +42,7 @@ def graph2D(xdata,ydata,
             xticrot=None,xticsize=None,
             xSci=False,ySci=False,
             xLog=False,yLog=False,
+            xtics=None,ytics=None,
             dpi=100,figsize=[6.4, 4.8],
             bar_width=0.8,
             zeroaxis=False,
@@ -258,11 +259,22 @@ def graph2D(xdata,ydata,
   if yLog:
     plt.yscale('log')
 
-  if xticrot != None:
+  if xticrot is not None:
     plt.xticks(rotation=xticrot)
 
-  if xticsize != None:
+  if xticsize is not None:
     plt.xticks(fontsize=xticsize)
+
+  if xtics is not None:
+    start, end = axis.get_xlim()
+    # print(start, end, xtics)
+    xtics=round((end-start)/xtics)
+    axis.xaxis.set_ticks(np.arange(start, end, xtics))
+
+  if ytics is not None:
+    start, end = axis.get_xlim()
+    ytics=round((end-start)/ytics)
+    axis.yaxis.set_ticks(np.arange(start, end, ytics))
 
   if subtitle is not None:
     plt.figtext(0.5,0.91,subtitle,horizontalalignment='center')
