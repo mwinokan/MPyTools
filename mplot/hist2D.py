@@ -22,8 +22,7 @@ def hist2D(xdata,ydata,
            filename=None,
            show=True,
            verbosity=2,density=False,
-           printScript=False,
-           range=None):
+           printScript=False,xmin=None,xmax=None,ymin=None,ymax=None,dpi=100,figsize=[4.8,6.4]):
 
   if (verbosity > 0):
     if title is not None:
@@ -40,6 +39,13 @@ def hist2D(xdata,ydata,
   many = any(isinstance(el,list) for el in ydata)
 
   assert not many
+
+  if not any([thing is None for thing in [xmin,xmax,ymin,ymax]]):
+    range = [[xmin,xmax],[ymin,ymax]]
+  else:
+    range = None
+
+  graph, axis = plt.subplots(dpi=dpi,figsize=figsize)
 
   plt.hist2d(xdata,ydata,bins=bins,range=range,density=density)
 
