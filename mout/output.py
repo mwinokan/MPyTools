@@ -18,6 +18,7 @@ def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbos
       print(mcol.func+thisScript+mcol.clear+":",end=' ')
     if prefix is not None:
       print(mcol.bold+prefix,end=' ')
+    string = str(string)
     print(mcol.bold+string+mcol.clear,flush=True,end=end)
 
   if dataFile is not None:
@@ -114,7 +115,7 @@ def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):
     prefix = "Error: "
   print(mcol.error+prefix+string+mcol.error,end='')
   if code is not None: 
-    print(mcol.error+" [code="+str(code)+"]")
+    print(mcol.error+" [code="+str(code)+"]",end='')
   print(mcol.clear,flush=True,end=end)
   if fatal: exit()
 
