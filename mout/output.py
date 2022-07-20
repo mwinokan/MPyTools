@@ -8,42 +8,18 @@ from .convert import toPrecision
 
 def debugOn():
   global SUPPRESS_DEBUG
-  print("debugOn",SUPPRESS_DEBUG)
   SUPPRESS_DEBUG = False
-  # writeDebugState()
 
 def debugOff():
   global SUPPRESS_DEBUG
-  print("debugOff",SUPPRESS_DEBUG)
   SUPPRESS_DEBUG = True
-  # writeDebugState()
-
-# def writeDebugState():
-#   global SUPPRESS_DEBUG
-#   print("writeDebugState",SUPPRESS_DEBUG)
-#   with open(f"{os.path.dirname(__file__)}/.debug",'w') as f:
-#     f.write(f"{str(SUPPRESS_DEBUG)[0]}\n")
 
 def debugOut(string):
   global SUPPRESS_DEBUG
-  print("debugOut",SUPPRESS_DEBUG)
   if not SUPPRESS_DEBUG:
     headerOut(string,prefix=mcol.debug+">>>")
 
-# try:
-#   with open(f"{os.path.dirname(__file__)}/.debug") as f:
-#     for line in f:
-#       if line.startswith("T"):
-#         SUPPRESS_DEBUG = True
-#       else:
-#         SUPPRESS_DEBUG = False
-# except FileNotFoundError:
-#   SUPPRESS_DEBUG = True
-#   debugOff()
-#   print("global",SUPPRESS_DEBUG)
-
 SUPPRESS_DEBUG = True
-# writeDebugState()
 
 def out(string,printScript=False,colour="",end="\n"):
   if printScript:
