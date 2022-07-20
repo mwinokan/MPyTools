@@ -14,10 +14,15 @@ def debugOff():
   global SUPPRESS_DEBUG
   SUPPRESS_DEBUG = True
 
-def debugOut(string):
+def debugHeader(string):
   global SUPPRESS_DEBUG
   if not SUPPRESS_DEBUG:
     headerOut(string,prefix=mcol.debug+">>>")
+
+def debugOut(string):
+  global SUPPRESS_DEBUG
+  if not SUPPRESS_DEBUG:
+    out(mcol.bold+mcol.debug+string)
 
 SUPPRESS_DEBUG = True
 
