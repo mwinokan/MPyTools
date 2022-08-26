@@ -8,7 +8,9 @@
 # this = sys.modules[__name__]
 
 # # we can explicitly make assignments on it 
-# this._ACTIVE_PROGRESS_ = False
+# this.__SHOW_DEBUG__ = False
+
+# __SHOW_DEBUG__ = True
 
 # ###
 
@@ -20,6 +22,8 @@ from .output import warningOut
 from .output import errorOut
 from .output import successOut
 from .output import differenceOut
+from .output import hideDebug
+from .output import showDebug
 
 from .progress import progress
 
@@ -33,3 +37,5 @@ from .fileio import array2file # documentation missing
 from .print import blockPrint
 from .print import enablePrint
 from .print import redirectPrint
+
+# import global_scope

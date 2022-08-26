@@ -5,6 +5,10 @@ import numpy as np
 
 from .convert import toPrecision
 
+# ! To-Do: Add a debug/verbosity level that is controlled by a global variable
+
+__SHOW_DEBUG__ = True
+
 def out(string,printScript=False,colour="",end="\n"):
   if printScript:
     thisScript = sys.argv[0]                                    # get name of script
@@ -28,11 +32,30 @@ def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbos
     dataFile.write('\n')
 
 def debugOut(string):
-  headerOut(string,prefix=mcol.debug+">>>")
+  global __SHOW_DEBUG__
+  if __SHOW_DEBUG__: 
+    headerOut(string,prefix=mcol.debug+">>>")
+
+def hideDebug():
+  global __SHOW_DEBUG__
+  __SHOW_DEBUG__ = False
+
+def showDebug():
+  global __SHOW_DEBUG__
+  __SHOW_DEBUG__ = True
+
 
 def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1,sf=True,list_length=True,integer=False):
   
+  ## to-do: value precision based on error sig figs
+
+  try:
+    name=str(name)
+  except:
+    errorOut("Problem converting name argument to string",code="mout.varOut")
+
   assert isinstance(name,str)
+
   assert np.array(value).ndim < 2
 
   nameStr = mcol.varName+name+mcol.clear
@@ -45,6 +68,9 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     if printScript:
       thisScript = sys.argv[0]                                    # get name of script
       print(mcol.func+thisScript+mcol.clear+": ",end='')
+
+    if type(value) is set:
+      value = list(value)
 
     if type(value) is str:
       valueStr = value
@@ -71,6 +97,13 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
       print(nameStr
             +" = "+valCol+valueStr+mcol.clear
             +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+    elif isinstance(error,list):
+      error = np.linalg.norm(error)      
+      errorStr = toPrecision(error,errorPrecision,sf=sf)
+      print(nameStr
+            +" = "+valCol+valueStr+mcol.clear
+            +" +/- "+valCol+errorStr+mcol.clear
+            +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
     else:
       errorStr = toPrecision(error,errorPrecision,sf=sf)
       print(nameStr
@@ -84,6 +117,11 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     else:
       dataFile.write(name+", "+str(value)+", "+str(error)+", "+unit)
     dataFile.write('\n')
+
+  if error is None:
+    return value
+  else:
+    return value,error
 
 def warningOut(string,printScript=False,code=None,end="\n"):
 
