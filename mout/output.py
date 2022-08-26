@@ -2,12 +2,27 @@ import mcol
 import sys                                    # sys.argv
 
 import numpy as np
+import os
 
 from .convert import toPrecision
 
-# ! To-Do: Add a debug/verbosity level that is controlled by a global variable
+def debugOn():
+  global SUPPRESS_DEBUG
+  SUPPRESS_DEBUG = False
 
-__SHOW_DEBUG__ = True
+def debugOff():
+  global SUPPRESS_DEBUG
+  SUPPRESS_DEBUG = True
+
+def debugHeader(string):
+  global SUPPRESS_DEBUG
+  if not SUPPRESS_DEBUG:
+    headerOut(string,prefix=mcol.debug+">>>")
+
+def debugOut(string):
+  global SUPPRESS_DEBUG
+  if not SUPPRESS_DEBUG:
+    out(mcol.bold+mcol.debug+string)
 
 def out(string,printScript=False,colour="",end="\n"):
   if printScript:
@@ -22,6 +37,7 @@ def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbos
       print(mcol.func+thisScript+mcol.clear+":",end=' ')
     if prefix is not None:
       print(mcol.bold+prefix,end=' ')
+    string = str(string)
     print(mcol.bold+string+mcol.clear,flush=True,end=end)
 
   if dataFile is not None:
@@ -30,20 +46,6 @@ def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbos
       dataFile.write(prefix)
     dataFile.write(string)
     dataFile.write('\n')
-
-def debugOut(string):
-  global __SHOW_DEBUG__
-  if __SHOW_DEBUG__: 
-    headerOut(string,prefix=mcol.debug+">>>")
-
-def hideDebug():
-  global __SHOW_DEBUG__
-  __SHOW_DEBUG__ = False
-
-def showDebug():
-  global __SHOW_DEBUG__
-  __SHOW_DEBUG__ = True
-
 
 def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1,sf=True,list_length=True,integer=False):
   
@@ -152,7 +154,7 @@ def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):
     prefix = "Error: "
   print(mcol.error+prefix+string+mcol.error,end='')
   if code is not None: 
-    print(mcol.error+" [code="+str(code)+"]")
+    print(mcol.error+" [code="+str(code)+"]",end='')
   print(mcol.clear,flush=True,end=end)
   if fatal: exit()
 

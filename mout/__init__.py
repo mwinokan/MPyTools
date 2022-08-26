@@ -1,29 +1,18 @@
 
-# # _ACTIVE_PROGRESS_ = False
-# ###
-
-# import sys
-
-# # this is a pointer to the module object instance itself.
-# this = sys.modules[__name__]
-
-# # we can explicitly make assignments on it 
-# this.__SHOW_DEBUG__ = False
-
-# __SHOW_DEBUG__ = True
-
-# ###
-
 from .output import out
 from .output import varOut
 from .output import headerOut
-from .output import debugOut
 from .output import warningOut
 from .output import errorOut
 from .output import successOut
 from .output import differenceOut
 from .output import hideDebug
 from .output import showDebug
+
+from .output import debugHeader
+from .output import debugOut
+from .output import debugOff
+from .output import debugOn
 
 from .progress import progress
 
