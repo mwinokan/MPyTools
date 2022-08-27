@@ -8,11 +8,7 @@ from .output import successOut
 from .output import differenceOut
 from .output import hideDebug
 from .output import showDebug
-
-from .output import debugHeader
 from .output import debugOut
-from .output import debugOff
-from .output import debugOn
 
 from .progress import progress
 

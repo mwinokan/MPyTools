@@ -6,23 +6,7 @@ import os
 
 from .convert import toPrecision
 
-def debugOn():
-  global SUPPRESS_DEBUG
-  SUPPRESS_DEBUG = False
-
-def debugOff():
-  global SUPPRESS_DEBUG
-  SUPPRESS_DEBUG = True
-
-def debugHeader(string):
-  global SUPPRESS_DEBUG
-  if not SUPPRESS_DEBUG:
-    headerOut(string,prefix=mcol.debug+">>>")
-
-def debugOut(string):
-  global SUPPRESS_DEBUG
-  if not SUPPRESS_DEBUG:
-    out(mcol.bold+mcol.debug+string)
+__SHOW_DEBUG__ = True
 
 def out(string,printScript=False,colour="",end="\n"):
   if printScript:
@@ -46,6 +30,19 @@ def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbos
       dataFile.write(prefix)
     dataFile.write(string)
     dataFile.write('\n')
+
+def debugOut(string):
+  global __SHOW_DEBUG__
+  if __SHOW_DEBUG__: 
+    headerOut(string,prefix=mcol.debug+">>>")
+
+def hideDebug():
+  global __SHOW_DEBUG__
+  __SHOW_DEBUG__ = False
+
+def showDebug():
+  global __SHOW_DEBUG__
+  __SHOW_DEBUG__ = True
 
 def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1,sf=True,list_length=True,integer=False):
   
