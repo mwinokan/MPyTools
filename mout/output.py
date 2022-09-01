@@ -57,7 +57,7 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
 
   assert np.array(value).ndim < 2
 
-  nameStr = mcol.varName+name+mcol.clear
+  nameStr = mcol.varName+str(name)+mcol.clear
 
   if integer:
     sf=False
@@ -91,6 +91,8 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     
     # print(type(nameStr))
     # print(type(valueStr))
+
+    valueStr = str(valueStr)
 
     if error is None:
       print(nameStr
