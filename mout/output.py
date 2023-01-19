@@ -151,7 +151,10 @@ def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):
     prefix = "Fatal Error: "
   else:
     prefix = "Error: "
-  print(mcol.error+prefix+string+mcol.error,end='')
+  try:
+    print(mcol.error+prefix+string+mcol.error,end='')
+  except TypeError:
+    print(mcol.error+prefix+str(string)+mcol.error,end='')
   if code is not None: 
     print(mcol.error+" [code="+str(code)+"]",end='')
   print(mcol.clear,flush=True,end=end)
