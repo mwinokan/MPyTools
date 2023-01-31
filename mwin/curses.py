@@ -202,6 +202,14 @@ class CursesApp():
 
 		return False
 
+	@property
+	def clickables(self):
+		clickables = []
+		if self.context_items:
+			clickables += [b for b in self.context_items if isinstance(b,Button)]
+		clickables += self.buttons
+		return clickables
+
 	def process_mouse(self):
 		self.mouse = curses.getmouse()
 		x = self.mouse[1]
@@ -213,7 +221,7 @@ class CursesApp():
 		elif state & SCROLL_DOWN and self.allow_scroll_increase:
 			self.scroll_line += 1 
 		else:
-			for button in self.buttons:
+			for button in self.clickables:
 				if button.is_hit(x,y+self.scroll_line):
 					if state & LEFT_CLICK:
 						prestate = button.active
