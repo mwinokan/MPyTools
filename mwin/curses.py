@@ -1,4 +1,5 @@
 import curses
+import curses.panel
 
 LEFT_CLICK = curses.BUTTON1_CLICKED
 LEFT_DOUBLE = curses.BUTTON1_DOUBLE_CLICKED
@@ -18,6 +19,8 @@ To-Do's
 class CursesApp():
 	"""A CLI-App Class based on pycurses"""
 	def __init__(self,debug=False):
+
+		self._flog = open('_curses.log','w')
 
 		self.max_padline = 0
 
@@ -39,8 +42,15 @@ class CursesApp():
 			mout.errorOut("Terminal is not wide enough!",fatal=True)
 	
 		self.scroll_line = 0
-		self._pad = curses.newpad(4000,150)
-	# /	self._pad = curses.newpad(4000,self.w)
+
+		self.pad_h = 4000
+		self.pad_w = 150
+
+		self._pad = curses.newpad(self.pad_h,self.pad_w)
+		# self._pad = curses.newpad(4000,self.w)
+
+		# self.contextwin = None
+		self.context_items = []
 
 		curses.noecho()
 		curses.cbreak()
@@ -49,6 +59,19 @@ class CursesApp():
 		curses.mousemask(-1)
 
 		self.define_colors()
+
+	def log(self,text):
+		self.message = text
+		self._flog.write(text)
+		self._flog.write('\n')
+
+	def context_menu(self,line,col,items):
+		self.log('Creating context window')
+		self.context_items = items
+
+	def hide_context_menu(self):
+		self.message = 'Closing context menu'
+		self.context_items = []
 
 	def define_colors(self):
 		curses.start_color()
@@ -103,20 +126,19 @@ class CursesApp():
 		for button in self.buttons:
 			button.selected = False
 	
-	# def clear_buttons(self):
-	# 	self.buttons = []
-
-	# def clear_texts(self):
-	# 	self.texts = []
-
 	def clear_drawables(self):
 		self.buttons = []
 		self.texts = []
 		self.drawables = []
 
 	def draw_objects(self):
+
 		for obj in self.drawables:
 			obj.draw(self)
+
+		if self.context_items:
+			for obj in self.context_items:
+				obj.draw(self)
 
 	def get_dims(self):
 		self.h, self.w = self.pad.getmaxyx()
@@ -142,7 +164,7 @@ class CursesApp():
 			self.pad.refresh(self.scroll_line,0,0,0,self.scr_h-4,self.scr_w-3)
 		else:
 			self.pad.refresh(self.scroll_line,0,0,0,self.scr_h-1,self.scr_w-3)
-
+		
 	def draw_scrollbar(self):
 
 		if self.max_padline > self.scr_h:
@@ -194,26 +216,19 @@ class CursesApp():
 			for button in self.buttons:
 				if button.is_hit(x,y+self.scroll_line):
 					if state & LEFT_CLICK:
-						# self.deselect_buttons()
+						prestate = button.active
+						self._last_pressed = button
 						button.toggle()
+						self.log(f'Toggling button {button.name} {prestate} --> {button.active}')
 						return True
-					# elif state & LEFT_DOUBLE:
-					# 	button.action()
-					# 	return True
-					# elif state & RIGHT_CLICK:
-					# 	button.action()
-					# 	return True
 		return False
 
 	@property
 	def allow_scroll_increase(self):
-		# if self.scroll_line > 0:
-
 		if self.scr_h > self.max_padline:
 			return False
 		elif self.scroll_line + self.scr_h > self.max_padline + 5:
 			return False
-
 		return True
 	
 	@property
@@ -257,6 +272,7 @@ class CursesApp():
 		curses.nocbreak()
 		curses.curs_set(1)
 		curses.endwin()
+		self._flog.close()
 
 class Text():
 
@@ -324,20 +340,22 @@ class Button(Text):
 
 	def toggle(self):
 		if self.active:
-			self.app.message = f"Disabling {self.name}"
+			self.app.log(f"Disabling {self.name}")
 			self.disable()
 		else:
-			self.app.message = f"Enabling {self.name}"
+			self.app.log(f"Enabling {self.name}")
 			self.enable()
 
 	def enable(self):
 		if self.enabler:
-			self.app.message = f"Running Button({self.name}).enabler({self.target})"
+			self.app.log(f"Running Button({self.name}).enabler({self.target})")
 			self.enabler(self.target)
-		self.active = True
+		else:
+			self.active = True
 
 	def disable(self):
 		if self.disabler:
-			self.app.message = f"Running Button({self.name}).disabler({self.target})"
+			self.app.log(f"Running Button({self.name}).disabler({self.target})")
 			self.disabler(self.target)
-		self.active = False
+		else:
+			self.active = False
