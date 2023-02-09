@@ -32,6 +32,7 @@ class CursesApp():
 		self.mouse = None
 
 		self.message = None
+		self._selection = None
 
 		self._scr = curses.initscr()
 		self.scr_h, self.scr_w = self._scr.getmaxyx()
@@ -153,11 +154,14 @@ class CursesApp():
 		self.drawcore()
 
 	def drawcore(self):
-		self.pad.clear()
+		self.padclear()
 		self.scr.clear()
 		self.max_padline = 0
 		self.draw_objects()
 		self.draw_scrollbar()
+		if self._selection:
+			self.highlight_selection()
+		self.message = self._selection
 		self.scr.refresh()
 		if self.debug: 
 			self.draw_debug()
@@ -220,15 +224,32 @@ class CursesApp():
 			self.scroll_line -= 1 
 		elif state & SCROLL_DOWN and self.allow_scroll_increase:
 			self.scroll_line += 1 
-		else:
+		elif state & LEFT_CLICK:
+			self._selection = None
 			for button in self.clickables:
 				if button.is_hit(x,y+self.scroll_line):
-					if state & LEFT_CLICK:
-						prestate = button.active
-						self._last_pressed = button
-						button.toggle()
-						self.log(f'Toggling button {button.name} {prestate} --> {button.active}')
-						return True
+					prestate = button.active
+					self._last_pressed = button
+					button.toggle()
+					self.log(f'Toggling button {button.name} {prestate} --> {button.active}')
+					return True
+		elif state & curses.BUTTON1_PRESSED:
+			self.message = "Drag Started"
+			self._mouse_drag_start = (x,y)
+			self._selection = None
+			return False
+		elif state & curses.BUTTON1_RELEASED:
+			self._mouse_drag_finish = (x,y)
+			select = self.get_selection(self._mouse_drag_start,self._mouse_drag_finish)
+			self.message = f"Drag Finished. {self._mouse_drag_start,self._mouse_drag_finish}"
+
+			# add to clipboard (MacOS)
+			import subprocess 
+			subprocess.run("pbcopy", text=True, input=select)
+			return False
+		else:
+			self._selection = None
+			return False
 		return False
 
 	@property
@@ -251,7 +272,74 @@ class CursesApp():
 	def pad(self):
 		return self._pad
 
+	def get_selection(self,v1,v2):
+
+		v1x = v1[0]
+		v1y = v1[1]
+		v2x = v2[0]
+		v2y = v2[1]
+
+		line_min = min(v1y, v2y)
+		line_max = max(v1y, v2y)
+		col_min = min(v1x, v2x)
+		col_max = max(v1x, v2x)
+
+		str_buffer = ""
+
+		for y in range(line_min,line_max+1):
+			for x in range(col_min,col_max+1):
+				char = self.padget(y,x)
+				str_buffer += char
+			str_buffer += "\n"
+
+		self._selection = [v1x,v1y,v2x,v2y]
+
+		return str_buffer
+
+	def padclear(self):
+		self.pad.clear()
+		self._pad_data = {}
+
+	def padlog(self,line,col,char):
+		if line not in self._pad_data.keys():
+			self._pad_data[line] = {}
+		self._pad_data[line][col] = char
+
+	def padget(self,line,col):
+		if line not in self._pad_data.keys():
+			return ' '
+
+		if col not in self._pad_data[line].keys():
+			return ' '
+
+		return self._pad_data[line][col]
+
+	def highlight_selection(self):
+
+		v1x,v1y,v2x,v2y = self._selection
+
+		line_min = min(v1y, v2y)
+		line_max = max(v1y, v2y)
+		col_min = min(v1x, v2x)
+		col_max = max(v1x, v2x)
+
+		for y in range(line_min,line_max+1):
+			for x in range(col_min,col_max+1):
+				self.highlight(y, x)
+
+	def highlight(self,line,col,char=None,color_pair=None):
+		color_pair = color_pair or self.MAGENTA_INV
+		color_pair = self.MAGENTA_INV
+		char = char or self.padget(line, col)
+		self.message = f'highlight {line} {col} {char}'
+		self.pad.attron(color_pair)
+		self.pad.addch(line, col, char)
+		self.pad.attroff(color_pair)
+
 	def padwrite(self,line,col,text,color_pair=None,bold=False):
+
+		for i,char in enumerate(text):
+			self.padlog(line, col+i, char)
 
 		if bold:
 			self.pad.attron(curses.A_BOLD)
