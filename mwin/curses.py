@@ -50,6 +50,8 @@ class CursesApp():
 		self._pad = curses.newpad(self.pad_h,self.pad_w)
 		# self._pad = curses.newpad(4000,self.w)
 
+		self.padclear()
+
 		# self.contextwin = None
 		self.context_items = []
 
@@ -144,8 +146,11 @@ class CursesApp():
 	def get_dims(self):
 		self.h, self.w = self.pad.getmaxyx()
 
-	def draw(self):
-		redraw = self.process_keypress()
+	def draw(self,key=True):
+		if key:
+			redraw = self.process_keypress()
+		else:
+			redraw = True
 		self.drawcore()
 		return redraw
 
@@ -336,24 +341,64 @@ class CursesApp():
 		self.pad.addch(line, col, char)
 		self.pad.attroff(color_pair)
 
-	def padwrite(self,line,col,text,color_pair=None,bold=False):
+	def padwrite(self,line,col,text,color_pair=None,bold=False,underline=False):
 
 		for i,char in enumerate(text):
 			self.padlog(line, col+i, char)
 
-		if bold:
-			self.pad.attron(curses.A_BOLD)
+		attribute = None
 
-		if color_pair:
-			self.pad.attron(color_pair)
+		if bold:
+			bold = curses.A_BOLD
+		else:
+			bold = 0
+
+		if underline:
+			underline = curses.A_UNDERLINE
+		else:
+			underline = 0
+
+		# if bold:
+		# 	attribute = curses.A_BOLD
+		# 	# self.pad.attron(curses.A_BOLD)
+		
+		# if underline:
+		# 	if attribute:
+		# 		attribute = attribute | curses.A_UNDERLINE
+		# 	else:
+		# 		attribute = curses.A_UNDERLINE
+		# 	# self.pad.attron(curses.A_UNDERLINE)
+
+		# if color_pair:
+		# 	if attribute:
+		# 		attribute = attribute | color_pair
+		# 	else:
+		# 		attribute = color_pair
+		# 	# self.pad.attron(color_pair)
+
+		attribute = bold | underline | color_pair
+
+		if bold and color_pair:
+			self.log(f'BOLD COLOUR')
+
+		if attribute:
+			self.pad.attron(attribute)
+			self.log(f'{bold} {underline} {color_pair} {bold | underline | color_pair}')
+			self.log(f'{bold:b} {underline:b} {color_pair:b} {attribute:b}')
 
 		self.pad.addstr(line,col,text)
 
-		if bold:
-			self.pad.attroff(curses.A_BOLD)
+		if attribute:
+			self.pad.attroff(attribute)
 
-		if color_pair:
-			self.pad.attroff(color_pair)
+		# if bold:
+		# 	self.pad.attroff(curses.A_BOLD)
+
+		# if underline:
+		# 	self.pad.attroff(curses.A_UNDERLINE)
+
+		# if color_pair:
+		# 	self.pad.attroff(color_pair)
 
 		if line > self.max_padline:
 			self.max_padline = line
@@ -372,13 +417,14 @@ class CursesApp():
 
 class Text():
 
-	def __init__(self,name,line,col,color_pair=None,bold=False):
+	def __init__(self,name,line,col,color_pair=None,bold=False,underline=False):
 		self.name = name
 		self.line = line
 		self.col = col
 		self.activename = None
 		self.color_pair = color_pair or curses.color_pair(0)
 		self.bold = bold
+		self.underline = underline
 
 	@property
 	def endcol(self):
@@ -395,7 +441,7 @@ class Text():
 			return len(self.name)
 
 	def draw(self,app):
-		app.padwrite(self.line,self.col,self.name,self.color_pair,bold=self.bold)
+		app.padwrite(self.line,self.col,self.name,self.color_pair,bold=self.bold,underline=self.underline)
 
 class Button(Text):
 	def __init__(self,app,name,line,col,active=False,enabler=None,disabler=None,target=None,padding=1,activename=None,color_inactive=None,color_active=None):
