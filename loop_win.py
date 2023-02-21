@@ -31,7 +31,7 @@ def run_process(command):
 class LoopWindow(CursesApp):
 
 	def __init__(self,command,sleep=2.0):
-		super(LoopWindow, self).__init__(debug=True)
+		super(LoopWindow, self).__init__(debug=False,nodelay=True)
 
 		self.command = command
 
@@ -44,7 +44,7 @@ class LoopWindow(CursesApp):
 
 				start_time = time.time()
 
-				redraw = self.draw(False)
+				redraw = self.draw()
 
 				self.clear_drawables()
 				
@@ -52,12 +52,12 @@ class LoopWindow(CursesApp):
 
 				self.drawcore()
 				
-				self.log(f"Redrawn at {time.time()}")
+				# self.log(f"Redrawn at {time.time()}")
 
-				delta_time = time.time() - start_time
+				# delta_time = time.time() - start_time
 
-				if delta_time < sleep:
-					time.sleep(sleep-delta_time)
+				# if delta_time < sleep:
+				# 	time.sleep(sleep-delta_time)
 
 		except KeyboardInterrupt:
 			pass

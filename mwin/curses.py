@@ -18,9 +18,12 @@ To-Do's
 
 class CursesApp():
 	"""A CLI-App Class based on pycurses"""
-	def __init__(self,debug=False):
+	def __init__(self,debug=False,nodelay=False,logging=False):
 
-		self._flog = open('_curses.log','w')
+		if logging:
+			self._flog = open('_curses.log','w')
+		else:
+			self._flog = None
 
 		self.max_padline = 0
 
@@ -44,6 +47,9 @@ class CursesApp():
 	
 		self.scroll_line = 0
 
+		if nodelay:
+			self._scr.nodelay(1)
+
 		self.pad_h = 4000
 		self.pad_w = 150
 
@@ -65,8 +71,9 @@ class CursesApp():
 
 	def log(self,text):
 		self.message = text
-		self._flog.write(text)
-		self._flog.write('\n')
+		if self._flog:
+			self._flog.write(text)
+			self._flog.write('\n')
 
 	def context_menu(self,line,col,items):
 		self.log('Creating context window')
@@ -146,11 +153,8 @@ class CursesApp():
 	def get_dims(self):
 		self.h, self.w = self.pad.getmaxyx()
 
-	def draw(self,key=True):
-		if key:
-			redraw = self.process_keypress()
-		else:
-			redraw = True
+	def draw(self):
+		redraw = self.process_keypress()		
 		self.drawcore()
 		return redraw
 
@@ -413,7 +417,8 @@ class CursesApp():
 		curses.nocbreak()
 		curses.curs_set(1)
 		curses.endwin()
-		self._flog.close()
+		if self._flog:
+			self._flog.close()
 
 class Text():
 
