@@ -18,7 +18,7 @@ To-Do's
 
 class CursesApp():
 	"""A CLI-App Class based on pycurses"""
-	def __init__(self,debug=False,nodelay=False,logging=False):
+	def __init__(self,debug=False,nodelay=False,logging=False,force_draw=False):
 
 		if logging:
 			self._flog = open('_curses.log','w')
@@ -36,6 +36,8 @@ class CursesApp():
 
 		self.message = None
 		self._selection = None
+		
+		self._force_draw = force_draw
 
 		self._scr = curses.initscr()
 		self.scr_h, self.scr_w = self._scr.getmaxyx()
@@ -154,7 +156,9 @@ class CursesApp():
 		self.h, self.w = self.pad.getmaxyx()
 
 	def draw(self):
-		redraw = self.process_keypress()		
+		redraw = self.process_keypress()	
+		if self._force_draw:
+			redraw = True	
 		self.drawcore()
 		return redraw
 

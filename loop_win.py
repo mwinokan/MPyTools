@@ -37,27 +37,23 @@ class LoopWindow(CursesApp):
 
 		try:
 
+			start_time = time.time()
 			self.draw_buffer()
 			self.firstdraw()
 
 			while True:
 
-				start_time = time.time()
-
 				redraw = self.draw()
 
-				self.clear_drawables()
-				
-				self.draw_buffer()
+				delta_time = time.time() - start_time
+				if delta_time > sleep:
+					start_time = time.time()
+					self.clear_drawables()
+					self.draw_buffer()
+					redraw = True
 
-				self.drawcore()
-				
-				# self.log(f"Redrawn at {time.time()}")
-
-				# delta_time = time.time() - start_time
-
-				# if delta_time < sleep:
-				# 	time.sleep(sleep-delta_time)
+				if redraw:
+					self.drawcore()
 
 		except KeyboardInterrupt:
 			pass
