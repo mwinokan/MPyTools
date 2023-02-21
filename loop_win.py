@@ -30,7 +30,7 @@ def run_process(command):
 
 class LoopWindow(CursesApp):
 
-	def __init__(self,command,sleep=2.0):
+	def __init__(self,command,sleep=5.0):
 		super(LoopWindow, self).__init__(debug=False,nodelay=True)
 
 		self.command = command
