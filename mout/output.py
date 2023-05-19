@@ -9,13 +9,15 @@ from .convert import toPrecision
 __SHOW_DEBUG__ = True
 
 def out(string,colour="",end="\n"):
-  print(colour+string+mcol.clear,flush=True,end=end)
+  print(f'{colour}{string}{mcol.clear}',flush=True,end=end)
 
 def headerOut(string,prefix=None,end="\n"):
-  if prefix is not None:
-    print(mcol.bold+prefix,end=' ')
+  str_buffer = ''
+  if prefix:
+    str_buffer += f'{mcol.bold}{prefix} '
   string = str(string)
-  print(mcol.bold+string+mcol.clear,flush=True,end=end)
+  str_buffer += f'{mcol.bold}{string}{mcol.clear}'
+  out(str_buffer,end=end)
 
 def debugOut(string):
   global __SHOW_DEBUG__
@@ -34,16 +36,8 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
   
   ## to-do: value precision based on error sig figs
 
-  try:
-    name=str(name)
-  except:
-    errorOut("Problem converting name argument to string",code="mout.varOut")
-
-  assert isinstance(name,str)
-
-  assert np.array(value).ndim < 2
-
-  nameStr = mcol.varName+str(name)+mcol.clear
+  str_buffer = ''
+  nameStr = f'{mcol.varName}{name}{mcol.clear}'
 
   if integer:
     sf=False
@@ -58,38 +52,33 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     valueStr = str(value)
   elif isinstance(value,list):
     valueStr = toPrecision(value,precision,sf=sf)
-    if list_length: nameStr += "[#="+str(len(value))+"]"
+    if list_length: 
+      nameStr += f"[#={len(value)}]"
   elif isinstance(value,np.ndarray):
     if np.ndim(value) != 1:
       valueStr = str(value)
     else:
       valueStr = toPrecision(list(value),precision,sf=sf)
-      if list_length: nameStr += "[#="+str(len(value))+"]"
+      if list_length: 
+        nameStr += f"[#={len(value)}]"
   elif type(value) is int:
     valueStr = str(value)
   else:
     valueStr = toPrecision(value,precision,sf=sf)
   
-  valueStr = str(valueStr)
-
   if error is None:
-    print(nameStr
-          +" = "+valCol+valueStr+mcol.clear
-          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
-  elif isinstance(error,list):
-    error = np.linalg.norm(error)      
-    errorStr = toPrecision(error,errorPrecision,sf=sf)
-    print(nameStr
-          +" = "+valCol+valueStr+mcol.clear
-          +" +/- "+valCol+errorStr+mcol.clear
-          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
-  else:
-    errorStr = toPrecision(error,errorPrecision,sf=sf)
-    print(nameStr
-          +" = "+valCol+valueStr+mcol.clear
-          +" +/- "+valCol+errorStr+mcol.clear
-          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+    str_buffer += f' = {valCol}{valueStr}{mcol.clear}{mcol.varType} {unit}{mcol.clear}'
+    out(str_buffer,end=end)
 
+  else:
+
+    if isinstance(error,list):
+      error = np.linalg.norm(error)      
+    errorStr = toPrecision(error,errorPrecision,sf=sf)
+    
+    str_buffer += f' = {valCol}{valueStr}{mcol.clear} +/- {valCol}{errorStr}{mcol.varType} {unit}{mcol.clear}'
+    out(str_buffer,end=end)
+    
   if error is None:
     return value
   else:
