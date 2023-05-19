@@ -8,16 +8,33 @@ from .convert import toPrecision
 
 __SHOW_DEBUG__ = True
 
-def out(string,colour="",end="\n"):
-  print(f'{colour}{string}{mcol.clear}',flush=True,end=end)
+def out(string,colour="",this_len=None,end="\n"):
+
+  from .progress import _ACTIVE_PROGRESS_
+  if _ACTIVE_PROGRESS_:
+    print("\r",flush=True,end='')
+
+  if this_len is None:
+    this_len = len(string)
+
+  print(f'{colour}{string}',flush=True,end='')
+
+  if _ACTIVE_PROGRESS_ and _ACTIVE_PROGRESS_ > this_len:
+    print(' '*(_ACTIVE_PROGRESS_ - this_len),end='')
+
+  print(mcol.clear,flush=True,end=end)
 
 def headerOut(string,prefix=None,end="\n"):
   str_buffer = ''
+  this_len = 0
   if prefix:
     str_buffer += f'{mcol.bold}{prefix} '
+    this_len += len(prefix) + 1
+
   string = str(string)
   str_buffer += f'{mcol.bold}{string}{mcol.clear}'
-  out(str_buffer,end=end)
+  this_len += len(string)
+  out(str_buffer,this_len=this_len,end=end)
 
 def debugOut(string):
   global __SHOW_DEBUG__
@@ -36,7 +53,6 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
   
   ## to-do: value precision based on error sig figs
 
-  str_buffer = ''
   nameStr = f'{mcol.varName}{name}{mcol.clear}'
 
   if integer:
@@ -48,27 +64,38 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
 
   if type(value) is str:
     valueStr = value
+    this_len = len(valueStr)
   elif isinstance(value,bool):
     valueStr = str(value)
+    this_len = len(valueStr)
   elif isinstance(value,list):
     valueStr = toPrecision(value,precision,sf=sf)
+    this_len = len(valueStr)
     if list_length: 
       nameStr += f"[#={len(value)}]"
+      this_len += len(f"[#={len(value)}]")
   elif isinstance(value,np.ndarray):
     if np.ndim(value) != 1:
       valueStr = str(value)
+      this_len = len(valueStr)
     else:
       valueStr = toPrecision(list(value),precision,sf=sf)
+      this_len = len(valueStr)
       if list_length: 
         nameStr += f"[#={len(value)}]"
+        this_len += len(f"[#={len(value)}]")
   elif type(value) is int:
     valueStr = str(value)
+    this_len = len(valueStr)
   else:
     valueStr = toPrecision(value,precision,sf=sf)
+    this_len = len(valueStr)
   
+  str_buffer = nameStr
+
   if error is None:
     str_buffer += f' = {valCol}{valueStr}{mcol.clear}{mcol.varType} {unit}{mcol.clear}'
-    out(str_buffer,end=end)
+    this_len += 4 + len(valueStr) + len(unit)
 
   else:
 
@@ -76,8 +103,10 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
       error = np.linalg.norm(error)      
     errorStr = toPrecision(error,errorPrecision,sf=sf)
     
+    this_len += 9 + len(errorStr) + len(valueStr) + len(unit)
     str_buffer += f' = {valCol}{valueStr}{mcol.clear} +/- {valCol}{errorStr}{mcol.varType} {unit}{mcol.clear}'
-    out(str_buffer,end=end)
+  
+  out(str_buffer,this_len=this_len,end=end)
     
   if error is None:
     return value
@@ -85,37 +114,37 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     return value,error
 
 def warningOut(string,code=None,end="\n"):
-  from .progress import _ACTIVE_PROGRESS_
-  if _ACTIVE_PROGRESS_:
-    print("\r",flush=True,end='')
-  print(mcol.warning+"Warning: "+string,end='')
+  str_buffer = f'{mcol.warning}Warning: {string}'
+  this_len = 9 + len(string)
   if code is not None: 
-    print(mcol.warning+" [code="+str(code)+"]",end='')
-  print(mcol.clear,flush=True,end=end)
+    this_len += 8 + len(code)
+    str_buffer += f" {mcol.warning}[code={code}]"
+  str_buffer += mcol.clear
+  out(str_buffer,this_len=this_len,end=end)
 
 def errorOut(string,fatal=False,code=None,end="\n"):
-
-  from .progress import _ACTIVE_PROGRESS_
-  if _ACTIVE_PROGRESS_:
-    print("\n",flush=True,end='')
-
   if fatal:
-    prefix = "Fatal Error: "
+    str_buffer = f"{mcol.error}Fatal Error: "
+    this_len = 13
   else:
-    prefix = "Error: "
-  try:
-    print(mcol.error+prefix+string+mcol.error,end='')
-  except TypeError:
-    print(mcol.error+prefix+str(string)+mcol.error,end='')
-  if code is not None: 
-    print(mcol.error+" [code="+str(code)+"]",end='')
-  print(mcol.clear,flush=True,end=end)
-  if fatal: exit()
+    str_buffer = f"{mcol.error}Error: "
+    this_len = 7
 
-def successOut(string,prefix=None,end="\n"):
-  if prefix is not None:
-    print(mcol.success+prefix,end=' ')
-  print(mcol.success+string+mcol.clear,flush=True,end=end)
+  str_buffer += f'{string}'
+  this_len += len(string)
+  
+  if code is not None: 
+    this_len += 8 + len(code)
+    str_buffer += f'{mcol.error} [code={code}]'
+    
+  str_buffer += mcol.clear
+  out(str_buffer,this_len=this_len,end=end)
+
+  if fatal: 
+    exit()
+
+def successOut(string,end="\n"):
+  out(f'{mcol.success}{string}{mcol.clear}',this_len=len(string),end=end)
 
 def differenceOut(name, value1, value2, unit="",valCol="",precision=8,diffPrecision=2,end="\n",verbosity=1):
 
