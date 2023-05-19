@@ -1,14 +1,20 @@
 
 from .output import out
 from .output import varOut
+from .output import var
 from .output import headerOut
+from .output import header
 from .output import warningOut
+from .output import warning
 from .output import errorOut
+from .output import error
 from .output import successOut
+from .output import success
 from .output import differenceOut
 from .output import hideDebug
 from .output import showDebug
 from .output import debugOut
+from .output import debug
 
 from .progress import progress
 

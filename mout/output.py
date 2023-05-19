@@ -32,6 +32,9 @@ def out(string,colour="",this_len=None,end="\n"):
   else:
     PARTIAL_LINE = True
 
+def header(string,prefix=None,end='\n'):
+  headerOut(string,prefix,end)
+
 def headerOut(string,prefix=None,end="\n"):
 
   if PARTIAL_LINE:
@@ -48,6 +51,9 @@ def headerOut(string,prefix=None,end="\n"):
   this_len += len(string)
   out(str_buffer,this_len=this_len,end=end)
 
+def debug(string):
+  debugOut(string)
+
 def debugOut(string):
   global SHOW_DEBUG
   if SHOW_DEBUG: 
@@ -61,7 +67,10 @@ def showDebug():
   global SHOW_DEBUG
   SHOW_DEBUG = True
 
-def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False):
+def var(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False):
+  varOut(name,value,unit,error,valCol,precision,errorPrecision,end,sf,list_length,integer)
+
+def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",sf=True,list_length=True,integer=False):
   
   ## to-do: value precision based on error sig figs
 
@@ -128,6 +137,9 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
   else:
     return value,error
 
+def warning(string,code=None,end="\n"):
+  warningOut(string,code,end)
+
 def warningOut(string,code=None,end="\n"):
   if PARTIAL_LINE:
     print('')
@@ -139,6 +151,9 @@ def warningOut(string,code=None,end="\n"):
     str_buffer += f" {mcol.warning}[code={code}]"
   str_buffer += mcol.clear
   out(str_buffer,this_len=this_len,end=end)
+
+def error(string,fatal=False,code=None,end="\n"):
+  errorOut(string,fatal,code,end)
 
 def errorOut(string,fatal=False,code=None,end="\n"):
   if PARTIAL_LINE:
@@ -163,6 +178,9 @@ def errorOut(string,fatal=False,code=None,end="\n"):
 
   if fatal: 
     exit()
+
+def success(string,end="\n"):
+  successOut(string,end)
 
 def successOut(string,end="\n"):
   if PARTIAL_LINE:
