@@ -3,33 +3,46 @@ import mcol # https://github.com/mwinokan/MPyTools
 import math
 import sys
 
-_ACTIVE_PROGRESS_ = False
+ACTIVE_PROGRESS = 0
 
-def progress(current,maximum,reverse=False,prepend=None,append="",width=20,fill="#",printScript=False):
+def progress(current,maximum,reverse=False,prepend="",append="",width=20,fill="#"):
 
-  global _ACTIVE_PROGRESS_
+  global ACTIVE_PROGRESS
 
   if reverse:
     current = maximum - current
+
+  # if done
   if current/maximum >= 1.00:
-    _ACTIVE_PROGRESS_ = False
     current = maximum
-  else:
-    _ACTIVE_PROGRESS_ = True
-  percentage = mcol.result + "{:>6.2f}%".format(current/maximum*100) + mcol.clear
-  if prepend is not None: 
+
+  elif prepend:
+    ACTIVE_PROGRESS = len(prepend) + len(append) + width + 9
     prepend = mcol.varName + prepend + mcol.clear + " = "
   else:
-    prepend = ""
-  if printScript:
-    thisScript = sys.argv[0]                                    # get name of script
-    prepend = mcol.func+thisScript+mcol.clear+": "
+    ACTIVE_PROGRESS = len(prepend) + len(append) + width + 12
+  
+  # percentage string
+  percentage = f"{mcol.result}{current/maximum*100:>6.2f}%{mcol.clear}"
+  
+  # number of fill characters
   this_fill = math.floor((current/maximum)*width)
-  if current != 0:
+  
+  # if there is an active progress go back to start
+  if ACTIVE_PROGRESS:
     prepend = "\r" + prepend
+
+  # if completed add a newline
   if this_fill == width:
-    append = append + "\n"
+    ACTIVE_PROGRESS = 0
+    append += "\n"
+
+  # create the fill string
   filling = "".rjust(this_fill,fill)
   filling = filling.ljust(width, ' ')
+
+  # create the bar string
   bar = "[" + filling + "] "
+  
+  # print the progress bar
   print(prepend + bar + percentage + append,flush=True,end='')

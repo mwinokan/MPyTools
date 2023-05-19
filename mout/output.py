@@ -6,12 +6,12 @@ import os
 
 from .convert import toPrecision
 
-__SHOW_DEBUG__ = True
+SHOW_DEBUG = True
 
 def out(string,colour="",this_len=None,end="\n"):
 
-  from .progress import _ACTIVE_PROGRESS_
-  if _ACTIVE_PROGRESS_:
+  from .progress import ACTIVE_PROGRESS
+  if ACTIVE_PROGRESS:
     print("\r",flush=True,end='')
 
   if this_len is None:
@@ -19,8 +19,8 @@ def out(string,colour="",this_len=None,end="\n"):
 
   print(f'{colour}{string}',flush=True,end='')
 
-  if _ACTIVE_PROGRESS_ and _ACTIVE_PROGRESS_ > this_len:
-    print(' '*(_ACTIVE_PROGRESS_ - this_len),end='')
+  if ACTIVE_PROGRESS and ACTIVE_PROGRESS > this_len:
+    print(' '*(ACTIVE_PROGRESS - this_len),end='')
 
   print(mcol.clear,flush=True,end=end)
 
@@ -37,17 +37,17 @@ def headerOut(string,prefix=None,end="\n"):
   out(str_buffer,this_len=this_len,end=end)
 
 def debugOut(string):
-  global __SHOW_DEBUG__
-  if __SHOW_DEBUG__: 
+  global SHOW_DEBUG
+  if SHOW_DEBUG: 
     headerOut(string,prefix=mcol.debug+">>>")
 
 def hideDebug():
-  global __SHOW_DEBUG__
-  __SHOW_DEBUG__ = False
+  global SHOW_DEBUG
+  SHOW_DEBUG = False
 
 def showDebug():
-  global __SHOW_DEBUG__
-  __SHOW_DEBUG__ = True
+  global SHOW_DEBUG
+  SHOW_DEBUG = True
 
 def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False):
   
