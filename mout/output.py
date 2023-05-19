@@ -7,8 +7,11 @@ import os
 from .convert import toPrecision
 
 SHOW_DEBUG = True
+PARTIAL_LINE = False
 
 def out(string,colour="",this_len=None,end="\n"):
+
+  global PARTIAL_LINE
 
   from .progress import ACTIVE_PROGRESS
   if ACTIVE_PROGRESS:
@@ -19,12 +22,21 @@ def out(string,colour="",this_len=None,end="\n"):
 
   print(f'{colour}{string}',flush=True,end='')
 
-  if ACTIVE_PROGRESS and ACTIVE_PROGRESS > this_len:
+  if ACTIVE_PROGRESS > this_len:
     print(' '*(ACTIVE_PROGRESS - this_len),end='')
 
   print(mcol.clear,flush=True,end=end)
 
+  if end == '\n':
+    PARTIAL_LINE = False
+  else:
+    PARTIAL_LINE = True
+
 def headerOut(string,prefix=None,end="\n"):
+
+  if PARTIAL_LINE:
+    print('')
+
   str_buffer = ''
   this_len = 0
   if prefix:
@@ -52,6 +64,9 @@ def showDebug():
 def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False):
   
   ## to-do: value precision based on error sig figs
+
+  if PARTIAL_LINE:
+    print('')
 
   nameStr = f'{mcol.varName}{name}{mcol.clear}'
 
@@ -114,6 +129,9 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     return value,error
 
 def warningOut(string,code=None,end="\n"):
+  if PARTIAL_LINE:
+    print('')
+
   str_buffer = f'{mcol.warning}Warning: {string}'
   this_len = 9 + len(string)
   if code is not None: 
@@ -123,6 +141,9 @@ def warningOut(string,code=None,end="\n"):
   out(str_buffer,this_len=this_len,end=end)
 
 def errorOut(string,fatal=False,code=None,end="\n"):
+  if PARTIAL_LINE:
+    print('')
+
   if fatal:
     str_buffer = f"{mcol.error}Fatal Error: "
     this_len = 13
@@ -144,6 +165,9 @@ def errorOut(string,fatal=False,code=None,end="\n"):
     exit()
 
 def successOut(string,end="\n"):
+  if PARTIAL_LINE:
+    print('')
+
   out(f'{mcol.success}{string}{mcol.clear}',this_len=len(string),end=end)
 
 def differenceOut(name, value1, value2, unit="",valCol="",precision=8,diffPrecision=2,end="\n",verbosity=1):
