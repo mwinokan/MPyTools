@@ -8,28 +8,14 @@ from .convert import toPrecision
 
 __SHOW_DEBUG__ = True
 
-def out(string,printScript=False,colour="",end="\n"):
-  if printScript:
-    thisScript = sys.argv[0]                                    # get name of script
-    print(mcol.func+thisScript+mcol.clear+": ",end='')
+def out(string,colour="",end="\n"):
   print(colour+string+mcol.clear,flush=True,end=end)
 
-def headerOut(string,printScript=False,prefix=None,end="\n",dataFile=None,verbosity=1):
-  if verbosity > 0:
-    if printScript:
-      thisScript = sys.argv[0]                                    # get name of script
-      print(mcol.func+thisScript+mcol.clear+":",end=' ')
-    if prefix is not None:
-      print(mcol.bold+prefix,end=' ')
-    string = str(string)
-    print(mcol.bold+string+mcol.clear,flush=True,end=end)
-
-  if dataFile is not None:
-    dataFile.write("# ")
-    if prefix is not None:
-      dataFile.write(prefix)
-    dataFile.write(string)
-    dataFile.write('\n')
+def headerOut(string,prefix=None,end="\n"):
+  if prefix is not None:
+    print(mcol.bold+prefix,end=' ')
+  string = str(string)
+  print(mcol.bold+string+mcol.clear,flush=True,end=end)
 
 def debugOut(string):
   global __SHOW_DEBUG__
@@ -44,7 +30,7 @@ def showDebug():
   global __SHOW_DEBUG__
   __SHOW_DEBUG__ = True
 
-def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1,sf=True,list_length=True,integer=False):
+def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False):
   
   ## to-do: value precision based on error sig figs
 
@@ -63,90 +49,67 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     sf=False
     precision=0
 
-  if verbosity > 0:
-    if printScript:
-      thisScript = sys.argv[0]                                    # get name of script
-      print(mcol.func+thisScript+mcol.clear+": ",end='')
+  if type(value) is set:
+    value = list(value)
 
-    if type(value) is set:
-      value = list(value)
-
-    if type(value) is str:
-      valueStr = value
-    elif isinstance(value,bool):
+  if type(value) is str:
+    valueStr = value
+  elif isinstance(value,bool):
+    valueStr = str(value)
+  elif isinstance(value,list):
+    valueStr = toPrecision(value,precision,sf=sf)
+    if list_length: nameStr += "[#="+str(len(value))+"]"
+  elif isinstance(value,np.ndarray):
+    if np.ndim(value) != 1:
       valueStr = str(value)
-    elif isinstance(value,list):
-      valueStr = toPrecision(value,precision,sf=sf)
+    else:
+      valueStr = toPrecision(list(value),precision,sf=sf)
       if list_length: nameStr += "[#="+str(len(value))+"]"
-    elif isinstance(value,np.ndarray):
-      if np.ndim(value) != 1:
-        valueStr = str(value)
-      else:
-        valueStr = toPrecision(list(value),precision,sf=sf)
-        if list_length: nameStr += "[#="+str(len(value))+"]"
-    elif type(value) is int:
-      valueStr = str(value)
-    else:
-      valueStr = toPrecision(value,precision,sf=sf)
-    
-    # print(type(nameStr))
-    # print(type(valueStr))
+  elif type(value) is int:
+    valueStr = str(value)
+  else:
+    valueStr = toPrecision(value,precision,sf=sf)
+  
+  valueStr = str(valueStr)
 
-    valueStr = str(valueStr)
-
-    if error is None:
-      print(nameStr
-            +" = "+valCol+valueStr+mcol.clear
-            +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
-    elif isinstance(error,list):
-      error = np.linalg.norm(error)      
-      errorStr = toPrecision(error,errorPrecision,sf=sf)
-      print(nameStr
-            +" = "+valCol+valueStr+mcol.clear
-            +" +/- "+valCol+errorStr+mcol.clear
-            +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
-    else:
-      errorStr = toPrecision(error,errorPrecision,sf=sf)
-      print(nameStr
-            +" = "+valCol+valueStr+mcol.clear
-            +" +/- "+valCol+errorStr+mcol.clear
-            +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
-
-  if dataFile is not None:
-    if error is None:
-      dataFile.write(name+", "+str(value)+", "+unit)
-    else:
-      dataFile.write(name+", "+str(value)+", "+str(error)+", "+unit)
-    dataFile.write('\n')
+  if error is None:
+    print(nameStr
+          +" = "+valCol+valueStr+mcol.clear
+          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+  elif isinstance(error,list):
+    error = np.linalg.norm(error)      
+    errorStr = toPrecision(error,errorPrecision,sf=sf)
+    print(nameStr
+          +" = "+valCol+valueStr+mcol.clear
+          +" +/- "+valCol+errorStr+mcol.clear
+          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
+  else:
+    errorStr = toPrecision(error,errorPrecision,sf=sf)
+    print(nameStr
+          +" = "+valCol+valueStr+mcol.clear
+          +" +/- "+valCol+errorStr+mcol.clear
+          +mcol.varType+" "+unit+mcol.clear,flush=True,end=end)
 
   if error is None:
     return value
   else:
     return value,error
 
-def warningOut(string,printScript=False,code=None,end="\n"):
-
+def warningOut(string,code=None,end="\n"):
   from .progress import _ACTIVE_PROGRESS_
   if _ACTIVE_PROGRESS_:
     print("\r",flush=True,end='')
-
-  if printScript:
-    thisScript = sys.argv[0]                                    # get name of script
-    print(mcol.func+thisScript+mcol.clear+": ",end='')
   print(mcol.warning+"Warning: "+string,end='')
   if code is not None: 
     print(mcol.warning+" [code="+str(code)+"]",end='')
   print(mcol.clear,flush=True,end=end)
 
-def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):
+def errorOut(string,fatal=False,code=None,end="\n"):
 
   from .progress import _ACTIVE_PROGRESS_
   if _ACTIVE_PROGRESS_:
     print("\n",flush=True,end='')
 
-  if printScript:
-    thisScript = sys.argv[0]                                    # get name of script
-    print(mcol.func+thisScript+mcol.clear+": ",end='')
   if fatal:
     prefix = "Fatal Error: "
   else:
@@ -160,19 +123,12 @@ def errorOut(string,printScript=False,fatal=False,code=None,end="\n"):
   print(mcol.clear,flush=True,end=end)
   if fatal: exit()
 
-def successOut(string,printScript=False,prefix=None,end="\n"):
-  if printScript:
-    thisScript = sys.argv[0]                                    # get name of script
-    print(mcol.func+thisScript+mcol.clear+":",end=' ')
+def successOut(string,prefix=None,end="\n"):
   if prefix is not None:
     print(mcol.success+prefix,end=' ')
   print(mcol.success+string+mcol.clear,flush=True,end=end)
 
-def differenceOut(name, value1, value2, unit="",valCol="",precision=8,diffPrecision=2,printScript=False,end="\n",dataFile=None,verbosity=1):
-  if verbosity > 0:
-    if printScript:
-      thisScript = sys.argv[0]                                    # get name of script
-      print(mcol.func+thisScript+mcol.clear+": ",end='')
+def differenceOut(name, value1, value2, unit="",valCol="",precision=8,diffPrecision=2,end="\n",verbosity=1):
 
   if type(value1) is int:
     valueStr1 = str(value1)
@@ -199,18 +155,7 @@ def differenceOut(name, value1, value2, unit="",valCol="",precision=8,diffPrecis
         +" = "+valCol+pcntStr+mcol.clear
         +mcol.varType+" % "+mcol.clear,flush=True,end=end)
 
-  if dataFile is not None:
-    dataFile.write(name+", "+diffStr+", "+pcntStr)
-    dataFile.write('\n')
-
   return difference, pcnt_diff
 
 def percentage_difference(value1,value2):
   return 200*(value2-value1)/(value1+value2)
-
-  # if dataFile is not None:
-  #   if error is None:
-  #     dataFile.write(name+", "+str(value)+", "+unit)
-  #   else:
-  #     dataFile.write(name+", "+str(value)+", "+str(error)+", "+unit)
-  #   dataFile.write('\n')
