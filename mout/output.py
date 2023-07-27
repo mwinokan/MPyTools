@@ -17,6 +17,8 @@ def out(string,colour="",this_len=None,end="\n"):
   if ACTIVE_PROGRESS:
     print("\r",flush=True,end='')
 
+  string = str(string)
+
   if this_len is None:
     this_len = len(string)
 
@@ -166,7 +168,9 @@ def errorOut(string,fatal=False,code=None,end="\n"):
     str_buffer = f"{mcol.error}Error: "
     this_len = 7
 
-  str_buffer += f'{string}'
+  string = str(string)
+
+  str_buffer += string
   this_len += len(string)
   
   if code is not None: 
