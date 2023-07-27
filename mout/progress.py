@@ -3,11 +3,23 @@ import mcol # https://github.com/mwinokan/MPyTools
 import math
 import sys
 
+try:
+  import emoji
+  EMOJI_SUPPORTED = True
+except ModuleNotFoundError:
+  EMOJI_SUPPORTED = False
+
 ACTIVE_PROGRESS = 0
 
-def progress(current,maximum,reverse=False,prepend="",append="",width=20,fill="#"):
+def progress(current,maximum,reverse=False,prepend="",append=None,width=20,fill="#"):
 
   global ACTIVE_PROGRESS
+
+  if EMOJI_SUPPORTED and len(list(emoji.analyze(fill))):
+    width = width // 2
+    fill_is_emoji = True
+  else:
+    fill_is_emoji = False
 
   if reverse:
     current = maximum - current
@@ -16,11 +28,16 @@ def progress(current,maximum,reverse=False,prepend="",append="",width=20,fill="#
   if current/maximum >= 1.00:
     current = maximum
 
-  elif prepend:
+  if append is not None:
+    append = f' {append}'
+  else:
+    append = ''
+
+  if prepend:
     ACTIVE_PROGRESS = len(prepend) + len(append) + width + 9
     prepend = mcol.varName + prepend + mcol.clear + " = "
   else:
-    ACTIVE_PROGRESS = len(prepend) + len(append) + width + 12
+    ACTIVE_PROGRESS = len(append) + width + 12
   
   # percentage string
   percentage = f"{mcol.result}{current/maximum*100:>6.2f}%{mcol.clear}"
@@ -38,8 +55,12 @@ def progress(current,maximum,reverse=False,prepend="",append="",width=20,fill="#
     append += "\n"
 
   # create the fill string
-  filling = "".rjust(this_fill,fill)
-  filling = filling.ljust(width, ' ')
+  if fill_is_emoji:
+    filling = this_fill * fill
+    filling = f'{filling}{"  "*(width - this_fill)}'
+  else:
+    filling = "".rjust(this_fill,fill)
+    filling = filling.ljust(width, ' ')
 
   # create the bar string
   bar = "[" + filling + "] "
