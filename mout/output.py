@@ -6,6 +6,8 @@ import os
 
 from .convert import toPrecision
 
+from collections.abc import KeysView
+
 SHOW_DEBUG = True
 PARTIAL_LINE = False
 
@@ -85,7 +87,13 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     sf=False
     precision=0
 
-  if type(value) is set:
+  if value is None:
+    value = "None"
+
+  if isinstance(value,set):
+    value = list(value)
+
+  if isinstance(value,KeysView):
     value = list(value)
 
   if type(value) is str:
