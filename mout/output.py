@@ -15,7 +15,7 @@ def out(string,colour="",this_len=None,end="\n"):
 
   global PARTIAL_LINE
 
-  from .progress import ACTIVE_PROGRESS
+  from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
   if ACTIVE_PROGRESS:
     print("\r",flush=True,end='')
 
@@ -33,6 +33,8 @@ def out(string,colour="",this_len=None,end="\n"):
 
   if end == '\n':
     PARTIAL_LINE = False
+    if ACTIVE_PROGRESS:
+      print(ACTIVE_PROGRESS_TEXT,flush=True,end='')
   else:
     PARTIAL_LINE = True
 

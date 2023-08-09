@@ -10,11 +10,19 @@ except ModuleNotFoundError:
   EMOJI_SUPPORTED = False
 
 ACTIVE_PROGRESS = 0
+ACTIVE_PROGRESS_TEXT = ""
+PROGRESS_FILL = None
+PROGRESS_WIDTH = None
+PROGRESS_PREPEND = None
 
 def progress(current,maximum,reverse=False,prepend="",append=None,width=20,fill="#"):
 
-  global ACTIVE_PROGRESS
+  global ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT, PROGRESS_WIDTH, PROGRESS_FILL, PROGRESS_PREPEND
 
+  PROGRESS_WIDTH = width
+  PROGRESS_PREPEND = prepend
+  PROGRESS_FILL = fill
+  
   if EMOJI_SUPPORTED and len(list(emoji.analyze(fill))):
     width = width // 2
     fill_is_emoji = True
@@ -52,6 +60,7 @@ def progress(current,maximum,reverse=False,prepend="",append=None,width=20,fill=
   # if completed add a newline
   if this_fill == width:
     ACTIVE_PROGRESS = 0
+    ACTIVE_PROGRESS_TEXT = ""
     append += "\n"
 
   # create the fill string
@@ -67,3 +76,8 @@ def progress(current,maximum,reverse=False,prepend="",append=None,width=20,fill=
   
   # print the progress bar
   print(prepend + bar + percentage + append,flush=True,end='')
+  ACTIVE_PROGRESS_TEXT = prepend + bar + percentage + append
+
+def finish(append=None):
+  if ACTIVE_PROGRESS:
+    progress(1,1,prepend=PROGRESS_PREPEND,append=append,fill=PROGRESS_FILL,width=PROGRESS_WIDTH)
