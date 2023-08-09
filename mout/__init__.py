@@ -17,6 +17,7 @@ from .output import debugOut
 from .output import debug
 
 from .progress import progress
+from .progress import finish
 
 from .convert import toPrecision # documentation missing
 from .convert import str2bool # documentation missing
