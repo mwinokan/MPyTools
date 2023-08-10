@@ -19,7 +19,7 @@ from .output import debug
 from .progress import progress
 from .progress import finish
 
-from .deco import debug_log
+from .deco import debug_log, debug_time
 
 from .convert import toPrecision # documentation missing
 from .convert import str2bool # documentation missing
