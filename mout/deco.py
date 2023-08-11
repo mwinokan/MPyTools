@@ -9,7 +9,12 @@ def debug_log(func):
 
         log_str = f'{func.__name__}('
         if args:
-            log_str += str(args).lstrip('(').rstrip(')')
+            try:
+                arg_str = str(args).lstrip('(').rstrip(')')
+            except AttributeError:
+                arg_str = 'ARGS'
+
+            log_str += arg_str
         if args and kwargs:
             log_str += ', '
         if args:
