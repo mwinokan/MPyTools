@@ -124,11 +124,21 @@ def cone_trace(origin,target,radius,distance,name=None,samples=20,start_at_targe
 	ys = []
 	zs = []
 
-	if distance < dist_origin_target:
-		if verbosity > 0:
-			mout.warning('Skipping cone with distance < dist_origin_target')
-		return go.Scatter3d(x=xs,y=ys,z=zs,mode='lines')
+	if plot_caps and start_at_target:
 
+		if distance < dist_origin_target - cap_radius:
+			if verbosity > 0:
+				mout.warning('Skipping cone with distance < dist_origin_target')
+			return go.Scatter3d(x=xs,y=ys,z=zs,mode='lines')
+
+	else:
+		if distance < dist_origin_target:
+			if verbosity > 0:
+				mout.warning('Skipping cone with distance < dist_origin_target')
+			return go.Scatter3d(x=xs,y=ys,z=zs,mode='lines')
+
+	#### DRAW THE CONE
+	
 	#### series of increasing circles along the extended vector origin --> target
 	
 	# orthogonal basis vectors for planes perpendicular to the cone's axis
@@ -146,82 +156,86 @@ def cone_trace(origin,target,radius,distance,name=None,samples=20,start_at_targe
 	else:
 		start = 0
 
-	# draw the circles
-	for i,d in enumerate(np.linspace(start,distance,samples)):
-		if i == 0 and not start_at_target:
-			continue				
+	if start_at_target and dist_origin_target < distance:
 
-		x_slice = []
-		y_slice = []
-		z_slice = []
+		# draw the circles
+		for i,d in enumerate(np.linspace(start,distance,samples)):
+			if i == 0 and not start_at_target:
+				continue				
 
-		r = radius * d/dist_origin_target
-		middle = origin + vec_origin_target/dist_origin_target * d
-		
-		for azimuth in np.linspace(0,2*np.pi,samples):
+			x_slice = []
+			y_slice = []
+			z_slice = []
 
-			point = unit_vec_a * np.sin(azimuth) + unit_vec_b * np.cos(azimuth)
+			r = radius * d/dist_origin_target
+			middle = origin + vec_origin_target/dist_origin_target * d
+			
+			for azimuth in np.linspace(0,2*np.pi,samples):
 
-			point *= r
+				point = unit_vec_a * np.sin(azimuth) + unit_vec_b * np.cos(azimuth)
 
-			point += middle
+				point *= r
 
-			x = point[0]
-			y = point[1]
-			z = point[2]
+				point += middle
 
-			x_slice.append(x)
-			y_slice.append(y)
-			z_slice.append(z)
+				x = point[0]
+				y = point[1]
+				z = point[2]
 
-		if start_at_target and i == 0:
-			first_x_slice = x_slice
-			first_y_slice = y_slice
-			first_z_slice = z_slice
+				x_slice.append(x)
+				y_slice.append(y)
+				z_slice.append(z)
 
-		x_slice += [x_slice[0],None]
-		y_slice += [y_slice[0],None]
-		z_slice += [z_slice[0],None]
+			if start_at_target and i == 0:
+				first_x_slice = x_slice
+				first_y_slice = y_slice
+				first_z_slice = z_slice
 
-		xs += x_slice
-		ys += y_slice
-		zs += z_slice
+			x_slice += [x_slice[0],None]
+			y_slice += [y_slice[0],None]
+			z_slice += [z_slice[0],None]
 
-		if i == samples - 1:
+			xs += x_slice
+			ys += y_slice
+			zs += z_slice
 
-			# draw some lines along the outside of the cone
+			if i == samples - 1:
 
-			if not start_at_target:
+				# draw some lines along the outside of the cone
 
-				for x,y,z in zip(x_slice[:-2],y_slice[:-2],z_slice[:-2]):
+				if not start_at_target:
 
-					xs.append(origin[0])
-					xs.append(x)
-					xs.append(None)
-					
-					ys.append(origin[1])
-					ys.append(y)
-					ys.append(None)
+					for x,y,z in zip(x_slice[:-2],y_slice[:-2],z_slice[:-2]):
 
-					zs.append(origin[2])
-					zs.append(z)
-					zs.append(None)
+						xs.append(origin[0])
+						xs.append(x)
+						xs.append(None)
+						
+						ys.append(origin[1])
+						ys.append(y)
+						ys.append(None)
 
-			else:
+						zs.append(origin[2])
+						zs.append(z)
+						zs.append(None)
 
-				for x1,y1,z1,x2,y2,z2 in zip(first_x_slice,first_y_slice,first_z_slice,x_slice[:-2],y_slice[:-2],z_slice[:-2]):
+				else:
 
-					xs.append(x1)
-					xs.append(x2)
-					xs.append(None)
-					
-					ys.append(y1)
-					ys.append(y2)
-					ys.append(None)
-					
-					zs.append(z1)
-					zs.append(z2)
-					zs.append(None)
+					for x1,y1,z1,x2,y2,z2 in zip(first_x_slice,first_y_slice,first_z_slice,x_slice[:-2],y_slice[:-2],z_slice[:-2]):
+
+						xs.append(x1)
+						xs.append(x2)
+						xs.append(None)
+						
+						ys.append(y1)
+						ys.append(y2)
+						ys.append(None)
+						
+						zs.append(z1)
+						zs.append(z2)
+						zs.append(None)
+
+	### DRAW THE CAP
 
 	if plot_caps and start_at_target:
 
