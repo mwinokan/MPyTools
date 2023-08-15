@@ -4,7 +4,12 @@ import plotly.graph_objects as go
 import mout
 
 def point_trace(point,name=None):
-	return go.Scatter3d(name=name,x=[point[0]],y=[point[1]],z=[point[2]],mode='markers')
+	if not isinstance(point,list):
+		point = [point]
+	xs = [p[0] for p in point]
+	ys = [p[1] for p in point]
+	zs = [p[2] for p in point]
+	return go.Scatter3d(name=name,x=xs,y=ys,z=zs,mode='markers')
 
 def vector_trace(start,vec,name=None):
 	return go.Scatter3d(name=name,x=[start[0],start[0]+vec[0]],y=[start[1],start[1]+vec[1]],z=[start[2],start[2]+vec[2]],mode='lines')
