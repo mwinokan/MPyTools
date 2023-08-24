@@ -81,3 +81,14 @@ def progress(current,maximum,reverse=False,prepend="",append=None,width=20,fill=
 def finish(append=None):
   if ACTIVE_PROGRESS:
     progress(1,1,prepend=PROGRESS_PREPEND,append=append,fill=PROGRESS_FILL,width=PROGRESS_WIDTH)
+
+def interrupt(append=None):
+  global ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+
+  import mcol
+  
+  if ACTIVE_PROGRESS:
+    ACTIVE_PROGRESS = 0
+    ACTIVE_PROGRESS_TEXT = ""
+    print(f'{mcol.error} interrupted {mcol.clear}')
+

@@ -18,6 +18,7 @@ from .output import debug
 
 from .progress import progress
 from .progress import finish
+from .progress import interrupt
 
 from .deco import debug_log, debug_time
 
