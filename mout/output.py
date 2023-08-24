@@ -11,32 +11,31 @@ from collections.abc import KeysView
 SHOW_DEBUG = True
 PARTIAL_LINE = False
 
-def out(string,colour="",this_len=None,end="\n"):
+def clear_line(term_width=None):
+  term_width = term_width or os.get_terminal_size()[0]
+  empty = "".join([" "]*term_width)
+  print(f'\r{empty}\r',end='')
+
+def out(string,colour="",this_len=None,end="\n",is_progress=False):
 
   global PARTIAL_LINE
-
   from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
-  if ACTIVE_PROGRESS:
-    print("\r",flush=True,end='')
 
   string = str(string)
 
-  if this_len is None:
-    this_len = len(string)
+  clear_line()
 
-  print(f'{colour}{string}',flush=True,end='')
-
-  if ACTIVE_PROGRESS > this_len:
-    print(' '*(ACTIVE_PROGRESS - this_len),end='')
-
-  print(mcol.clear,flush=True,end=end)
-
-  if end == '\n':
-    PARTIAL_LINE = False
-    if ACTIVE_PROGRESS:
-      print(ACTIVE_PROGRESS_TEXT,flush=True,end='')
-  else:
+  if end != '\n':
     PARTIAL_LINE = True
+  else:
+    PARTIAL_LINE = False
+
+  print(f'{colour}{string}{mcol.clear}',flush=True,end=end)
+
+  if not is_progress and ACTIVE_PROGRESS:
+    if PARTIAL_LINE:
+      print('')
+    print(ACTIVE_PROGRESS_TEXT,flush=True,end='')
 
 def underline(string, end='\n'):
   out(f'{mcol.underline}{string}',end=end)
@@ -46,7 +45,10 @@ def header(string,prefix=None,end='\n'):
 
 def headerOut(string,prefix=None,end="\n"):
 
-  if PARTIAL_LINE:
+  from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+  if ACTIVE_PROGRESS:
+    clear_line()
+  elif PARTIAL_LINE:
     print('')
 
   str_buffer = ''
@@ -83,7 +85,10 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
   
   ## to-do: value precision based on error sig figs
 
-  if PARTIAL_LINE:
+  from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+  if ACTIVE_PROGRESS:
+    clear_line()
+  elif PARTIAL_LINE:
     print('')
 
   nameStr = f'{mcol.varName}{name}{mcol.clear}'
@@ -156,7 +161,11 @@ def warning(string,code=None,end="\n"):
   warningOut(string,code,end)
 
 def warningOut(string,code=None,end="\n"):
-  if PARTIAL_LINE:
+  
+  from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+  if ACTIVE_PROGRESS:
+    clear_line()
+  elif PARTIAL_LINE:
     print('')
 
   str_buffer = f'{mcol.warning}Warning: {string}'
@@ -171,7 +180,11 @@ def error(string,fatal=False,code=None,end="\n"):
   errorOut(string,fatal,code,end)
 
 def errorOut(string,fatal=False,code=None,end="\n"):
-  if PARTIAL_LINE:
+  
+  from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+  if ACTIVE_PROGRESS:
+    clear_line()
+  elif PARTIAL_LINE:
     print('')
 
   if fatal:
@@ -200,12 +213,22 @@ def success(string,end="\n"):
   successOut(string,end)
 
 def successOut(string,end="\n"):
-  if PARTIAL_LINE:
+  
+  from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+  if ACTIVE_PROGRESS:
+    clear_line()
+  elif PARTIAL_LINE:
     print('')
 
   out(f'{mcol.success}{string}{mcol.clear}',this_len=len(string),end=end)
 
 def differenceOut(name, value1, value2, unit="",valCol="",precision=8,diffPrecision=2,end="\n",verbosity=1):
+
+  from .progress import ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+  if ACTIVE_PROGRESS:
+    clear_line()
+  elif PARTIAL_LINE:
+    print('')
 
   if type(value1) is int:
     valueStr1 = str(value1)

@@ -1,7 +1,10 @@
 
 import mcol # https://github.com/mwinokan/MPyTools
 import math
-import sys
+# import sys
+import os
+
+from .output import clear_line, out
 
 try:
   import emoji
@@ -9,86 +12,123 @@ try:
 except ModuleNotFoundError:
   EMOJI_SUPPORTED = False
 
-ACTIVE_PROGRESS = 0
-ACTIVE_PROGRESS_TEXT = ""
+ACTIVE_PROGRESS = False
+ACTIVE_PROGRESS_TEXT = False
 PROGRESS_FILL = None
-PROGRESS_WIDTH = None
+PROGRESS_VALUE = None
+PROGRESS_MAXIMUM = None
 PROGRESS_PREPEND = None
+PROGRESS_APPEND = None
 
-def progress(current,maximum,reverse=False,prepend="",append=None,width=20,fill="#"):
+def progress(value,max_value,prepend=None,append=None,append_color=None,fill="#"):
 
-  global ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT, PROGRESS_WIDTH, PROGRESS_FILL, PROGRESS_PREPEND
+  global ACTIVE_PROGRESS, PROGRESS_FILL, PROGRESS_PREPEND, PROGRESS_VALUE, PROGRESS_MAXIMUM, PROGRESS_APPEND, ACTIVE_PROGRESS_TEXT
 
-  PROGRESS_WIDTH = width
+  # get the terminal width
+  term_width = os.get_terminal_size()[0]
+
+  # clear the current line
+  clear_line(term_width)
+
+  # store progress parameters
+  PROGRESS_APPEND = append
   PROGRESS_PREPEND = prepend
   PROGRESS_FILL = fill
-  
+  PROGRESS_VALUE = value
+  PROGRESS_MAXIMUM = max_value
+
+  # process prepend and append
+  if prepend is not None:
+    plen = len(prepend)+1
+    prepend = f'{mcol.func}{prepend}{mcol.clear} '
+  else:
+    plen = 0
+    prepend = ''
+
+  if append is not None:
+    alen = len(append)+1
+    append = f' {append}'
+  else:
+    alen = 0
+    append = ''
+
+  if append_color is None:
+    append_color = ''
+
+  # calculate dynamic bar width
+  bar_width = term_width - 11 - plen - alen
+
+  # adjust for emoji
   if EMOJI_SUPPORTED and len(list(emoji.analyze(fill))):
-    width = width // 2
     fill_is_emoji = True
+    bar_width = bar_width//2
   else:
     fill_is_emoji = False
 
-  if reverse:
-    current = maximum - current
+  # finish the progress bar
+  if value == max_value:
 
-  # if done
-  if current/maximum >= 1.00:
-    current = maximum
+    ACTIVE_PROGRESS = False
+    
+    fraction = 1.0
+    bar_filling = "".join([fill]*bar_width)
+    if bar_width > 0:
+      bar = f'[{bar_filling}]'
+      gap = ' '
+    else:
+      bar = ''
+      gap = ''
+    end = '\n'
 
-  if append is not None:
-    append = f' {append}'
+  # in progress bar    
   else:
-    append = ''
 
-  if prepend:
-    ACTIVE_PROGRESS = len(prepend) + len(append) + width + 9
-    prepend = mcol.varName + prepend + mcol.clear + " = "
-  else:
-    ACTIVE_PROGRESS = len(append) + width + 12
-  
-  # percentage string
-  percentage = f"{mcol.result}{current/maximum*100:>6.2f}%{mcol.clear}"
-  
-  # number of fill characters
-  this_fill = math.floor((current/maximum)*width)
-  
-  # if there is an active progress go back to start
+    ACTIVE_PROGRESS = True
+
+    fraction = value/max_value
+
+    if fill_is_emoji:
+      bar_filling = "".join([fill]*(math.floor(bar_width*fraction)))
+      bar_empty = "".join(["  "]*(bar_width-len(bar_filling)))
+
+    else:
+      bar_filling = "".join([fill]*math.floor(bar_width*fraction))
+      bar_empty = "".join([" "]*(bar_width-len(bar_filling)))
+    if bar_width > 0:
+      bar = f'[{bar_filling}{bar_empty}]'
+      gap = ' '
+    else:
+      bar = ''
+      gap = ''
+    end = ''
+
+  # write
   if ACTIVE_PROGRESS:
-    prepend = "\r" + prepend
-
-  # if completed add a newline
-  if this_fill == width:
-    ACTIVE_PROGRESS = 0
-    ACTIVE_PROGRESS_TEXT = ""
-    append += "\n"
-
-  # create the fill string
-  if fill_is_emoji:
-    filling = this_fill * fill
-    filling = f'{filling}{"  "*(width - this_fill)}'
+    if bar_width < 0:
+      append = f'{append[:bar_width]}+++'
+      ACTIVE_PROGRESS_TEXT = f'{prepend}{mcol.clear}{bar}{gap}{mcol.result}{fraction:7.2%}{mcol.clear}{append_color}{append}'
+      out(ACTIVE_PROGRESS_TEXT,end=end,is_progress=True)
+    else:
+      ACTIVE_PROGRESS_TEXT = f'{prepend}{mcol.clear}{bar}{gap}{mcol.result}{fraction:7.2%}{mcol.clear}{append_color}{append}'
+      out(ACTIVE_PROGRESS_TEXT,end=end,is_progress=True)
   else:
-    filling = "".rjust(this_fill,fill)
-    filling = filling.ljust(width, ' ')
+    ACTIVE_PROGRESS_TEXT = False
+    if bar_width < 0:
+      append = f'{append[:bar_width]}+++'
+    out(f'{prepend}{mcol.clear}{bar}{gap}{mcol.result}{fraction:7.2%}{mcol.clear}{append_color}{append}',end=end,is_progress=True)
 
-  # create the bar string
-  bar = "[" + filling + "] "
-  
-  # print the progress bar
-  print(prepend + bar + percentage + append,flush=True,end='')
-  ACTIVE_PROGRESS_TEXT = prepend + bar + percentage + append
-
-def finish(append=None):
+def finish():
   if ACTIVE_PROGRESS:
-    progress(1,1,prepend=PROGRESS_PREPEND,append=append,fill=PROGRESS_FILL,width=PROGRESS_WIDTH)
+    progress(1,1,prepend=PROGRESS_PREPEND,append='OK',append_color=mcol.success,fill=PROGRESS_FILL)
 
 def interrupt(append=None):
-  global ACTIVE_PROGRESS, ACTIVE_PROGRESS_TEXT
+  global ACTIVE_PROGRESS
 
   import mcol
   
   if ACTIVE_PROGRESS:
-    ACTIVE_PROGRESS = 0
-    ACTIVE_PROGRESS_TEXT = ""
-    print(f'{mcol.error} interrupted {mcol.clear}')
+    progress(PROGRESS_VALUE,PROGRESS_MAXIMUM,prepend=PROGRESS_PREPEND,append=f'{PROGRESS_APPEND} INTERRUPTED',append_color=mcol.error,fill=PROGRESS_FILL)
+    print()
+    ACTIVE_PROGRESS = False
+    ACTIVE_PROGRESS_TEXT = False
 
