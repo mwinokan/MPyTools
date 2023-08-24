@@ -25,7 +25,10 @@ def progress(value,max_value,prepend=None,append=None,append_color=None,fill="#"
   global ACTIVE_PROGRESS, PROGRESS_FILL, PROGRESS_PREPEND, PROGRESS_VALUE, PROGRESS_MAXIMUM, PROGRESS_APPEND, ACTIVE_PROGRESS_TEXT
 
   # get the terminal width
-  term_width = os.get_terminal_size()[0]
+  try:
+    term_width = os.get_terminal_size()[0]
+  except OSError:
+    term_width = 60
 
   # clear the current line
   clear_line(term_width)

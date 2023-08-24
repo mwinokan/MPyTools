@@ -12,7 +12,11 @@ SHOW_DEBUG = True
 PARTIAL_LINE = False
 
 def clear_line(term_width=None):
-  term_width = term_width or os.get_terminal_size()[0]
+  try:
+    term_width = term_width or os.get_terminal_size()[0]
+  except OSError:
+    term_width = 60
+
   empty = "".join([" "]*term_width)
   print(f'\r{empty}\r',end='')
 
