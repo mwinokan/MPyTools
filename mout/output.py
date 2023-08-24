@@ -38,6 +38,9 @@ def out(string,colour="",this_len=None,end="\n"):
   else:
     PARTIAL_LINE = True
 
+def underline(string, end='\n'):
+  out(f'{mcol.underline}{string}',end=end)
+
 def header(string,prefix=None,end='\n'):
   headerOut(string,prefix,end)
 

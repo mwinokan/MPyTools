@@ -15,6 +15,7 @@ from .output import hideDebug
 from .output import showDebug
 from .output import debugOut
 from .output import debug
+from .output import underline
 
 from .progress import progress
 from .progress import finish
