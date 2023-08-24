@@ -20,7 +20,7 @@ PROGRESS_MAXIMUM = None
 PROGRESS_PREPEND = None
 PROGRESS_APPEND = None
 
-def progress(value,max_value,prepend=None,append=None,append_color=None,fill="#"):
+def progress(value,max_value,prepend=None,append=None,append_color=None,fill="#",width=None):
 
   global ACTIVE_PROGRESS, PROGRESS_FILL, PROGRESS_PREPEND, PROGRESS_VALUE, PROGRESS_MAXIMUM, PROGRESS_APPEND, ACTIVE_PROGRESS_TEXT
 
