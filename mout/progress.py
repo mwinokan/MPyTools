@@ -74,17 +74,18 @@ def progress(value,max_value,prepend=None,append=None,append_color=None,fill="#"
     ACTIVE_PROGRESS = False
     
     fraction = 1.0
-    bar_filling = "".join([fill]*bar_width)
-    if bar_width > 0:
-      bar = f'[{bar_filling}]'
-      gap = ' '
-    else:
-      bar = ''
-      gap = ''
+    prepend = prepend.rstrip(' ')
+    # bar_filling = "".join([fill]*bar_width)
+    # if bar_width > 0:
+    #   bar = f'[{bar_filling}]'
+    #   gap = ' '
+    # else:
+    #   bar = ''
+    #   gap = ''
     end = '\n'
 
   # in progress bar    
-  else:
+  if value != max_value:
 
     ACTIVE_PROGRESS = True
 
@@ -116,9 +117,10 @@ def progress(value,max_value,prepend=None,append=None,append_color=None,fill="#"
       out(ACTIVE_PROGRESS_TEXT,end=end,is_progress=True)
   else:
     ACTIVE_PROGRESS_TEXT = False
-    if bar_width < 0:
-      append = f'{append[:bar_width]}+++'
-    out(f'{prepend}{mcol.clear}{bar}{gap}{mcol.result}{fraction:7.2%}{mcol.clear}{append_color}{append}',end=end,is_progress=True)
+    # if bar_width < 0:
+    #   append = f'{append[:bar_width]}+++'
+    out(f'{prepend}{mcol.clear}{append_color}{append}',end=end,is_progress=True)
+    # out(f'{prepend}{mcol.clear}{bar}{gap}{mcol.result}{fraction:7.2%}{mcol.clear}{append_color}{append}',end=end,is_progress=True)
 
 def finish():
   if ACTIVE_PROGRESS:

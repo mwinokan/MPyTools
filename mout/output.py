@@ -27,7 +27,8 @@ def out(string,colour="",this_len=None,end="\n",is_progress=False):
 
   string = str(string)
 
-  clear_line()
+  if not PARTIAL_LINE:
+    clear_line()
 
   if end != '\n':
     PARTIAL_LINE = True
@@ -37,6 +38,7 @@ def out(string,colour="",this_len=None,end="\n",is_progress=False):
   print(f'{colour}{string}{mcol.clear}',flush=True,end=end)
 
   if not is_progress and ACTIVE_PROGRESS:
+    clear_line()
     if PARTIAL_LINE:
       print('')
     print(ACTIVE_PROGRESS_TEXT,flush=True,end='')
