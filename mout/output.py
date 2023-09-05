@@ -265,3 +265,8 @@ def differenceOut(name, value1, value2, unit="",valCol="",precision=8,diffPrecis
 
 def percentage_difference(value1,value2):
   return 200*(value2-value1)/(value1+value2)
+
+def json(data):
+  import json as js
+  strbuff = js.dumps(data,indent=2)
+  print(strbuff)
