@@ -23,6 +23,7 @@ from .progress import finish
 from .progress import interrupt
 
 from .deco import debug_log, debug_time
+from .testing import TestStatus
 
 from .convert import toPrecision # documentation missing
 from .convert import str2bool # documentation missing
