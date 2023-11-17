@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "MPyTools"
+version = "0.0.6"
+authors = [
+    { name="Max Winokan", email="max@winokan.com"},
+]
+description = "Convenient tools for CLI, GUI, and plotting"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "emoji",
+    "numpy",
+    "matplotlib",
+    "cycler",
+    "plotly",
+]
+[project.urls]
+"Homepage" = "https://github.com/mwinokan/MPyTools"
+"Bug Tracker" = "https://github.com/mwinokan/MPyTools/issues"
+[tool.hatch.build]
+include = [
+  "mout/*.py",
+  "mcol/*.py",
+  "mplot/*.py",
+  "mwin/*.py",
+  "mgo/*.py",
+  "loop_win.py",
+  "term_fix.py",
+]
