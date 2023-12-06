@@ -2,6 +2,7 @@
 
 # https://packaging.python.org/distributing/
 
+## update version number in pyproject.toml
 
 ### BUILDING THE PACKAGE
 

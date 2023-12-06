@@ -87,7 +87,7 @@ def showDebug():
 def var(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False):
   varOut(name,value,unit,error,valCol,precision,errorPrecision,end,sf,list_length,integer)
 
-def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",sf=True,list_length=True,integer=False):
+def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",sf=True,list_length=True,integer=False,symbol='='):
   
   ## to-do: value precision based on error sig figs
 
@@ -144,7 +144,7 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
   str_buffer = nameStr
 
   if error is None:
-    str_buffer += f' = {valCol}{valueStr}{mcol.clear}{mcol.varType} {unit}{mcol.clear}'
+    str_buffer += f' {symbol} {valCol}{valueStr}{mcol.clear}{mcol.varType} {unit}{mcol.clear}'
     this_len += 4 + len(valueStr) + len(unit)
 
   else:
@@ -154,7 +154,7 @@ def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=
     errorStr = toPrecision(error,errorPrecision,sf=sf)
     
     this_len += 9 + len(errorStr) + len(valueStr) + len(unit)
-    str_buffer += f' = {valCol}{valueStr}{mcol.clear} +/- {valCol}{errorStr}{mcol.varType} {unit}{mcol.clear}'
+    str_buffer += f' {symbol} {valCol}{valueStr}{mcol.clear} +/- {valCol}{errorStr}{mcol.varType} {unit}{mcol.clear}'
   
   out(str_buffer,this_len=this_len,end=end)
     
