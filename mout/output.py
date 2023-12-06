@@ -84,8 +84,8 @@ def showDebug():
   global SHOW_DEBUG
   SHOW_DEBUG = True
 
-def var(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False):
-  varOut(name,value,unit,error,valCol,precision,errorPrecision,end,sf,list_length,integer)
+def var(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",verbosity=1,sf=True,list_length=True,integer=False,symbol='='):
+  varOut(name,value,unit,error,valCol,precision,errorPrecision,end,sf,list_length,integer,symbol)
 
 def varOut(name, value, unit="",error=None,valCol="",precision=8,errorPrecision=2,end="\n",sf=True,list_length=True,integer=False,symbol='='):
   
