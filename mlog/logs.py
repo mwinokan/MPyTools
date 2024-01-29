@@ -6,12 +6,15 @@ import haggis.logs
 
 # VAR?
 
-def setup_logger(name):
+def setup_logger(name, debug=False):
   
   logger = logging.getLogger(name)
 
   logging.config.dictConfig(LOG_CONFIG)
-  logging.basicConfig(level="DEBUG")
+  if debug:
+    logging.basicConfig(level="DEBUG")
+  else:
+    logging.basicConfig(level="INFO")
 
   return logger
 
