@@ -74,6 +74,36 @@ class WritingFilter(logging.Filter):
     def filter(self, record: logging.LogRecord):
         return record.levelno == logging.WRITING
 
+class VarFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord):
+        return record.levelno == logging.VAR
+
+class VarFormatter(logging.Formatter):
+    def format(self, record):
+
+        value = None
+        color = ''
+        unit = None
+
+        variable = record.msg
+        if record.args:
+          
+          value = record.args[0]
+
+          if len(record.args) > 1:
+            kwargs = record.args[1]
+
+            if 'color' in kwargs:
+              color = getattr(mcol, kwargs['color'])
+
+            if 'unit' in kwargs:
+              unit = kwargs['unit']
+
+        if unit:
+          return f'{mcol.varName}{variable}{mcol.clear} = {color}{value} {mcol.varType}{unit}{mcol.clear}'
+        else:
+          return f'{mcol.varName}{variable}{mcol.clear} = {color}{value}{mcol.clear}'
+
 LOG_CONFIG = {
   "version": 1,
   "disable_existing_loggers": False,
@@ -91,6 +121,9 @@ LOG_CONFIG = {
 
     "debug": { "format": f"{mcol.faint}DEBUG: %(message)s{mcol.clear}"},
     "info": { "format": f"%(message)s"},
+    
+    # "var": { "()": VarFormatter('%(asctime)s - %(message2)s - %(name)s - %(levelname)s - %(message)s')},
+    "var": { "()": VarFormatter},
   },
 
   "filters": {
@@ -123,6 +156,9 @@ LOG_CONFIG = {
     },
     "writing": {
       "()": WritingFilter
+    },
+    "var": {
+      "()": VarFilter
     },
   },
   "handlers": {
@@ -191,6 +227,12 @@ LOG_CONFIG = {
       "formatter": "writing",
       "stream": "ext://sys.stdout",
       "filters": [ "writing" ],
+    },
+    "writing": {
+      "class": "logging.StreamHandler",
+      "formatter": "var",
+      "stream": "ext://sys.stdout",
+      "filters": [ "var" ],
     },
   },
   "loggers": {
