@@ -18,7 +18,7 @@ def setup_logger(name, debug=False):
 
   return logger
 
-haggis.logs.add_logging_level('VAR',22)
+haggis.logs.add_logging_level('VAR',23)
 haggis.logs.add_logging_level('TITLE',33)
 haggis.logs.add_logging_level('HEADER',32)
 haggis.logs.add_logging_level('SUCCESS',31)
@@ -228,7 +228,7 @@ LOG_CONFIG = {
       "stream": "ext://sys.stdout",
       "filters": [ "writing" ],
     },
-    "writing": {
+    "var": {
       "class": "logging.StreamHandler",
       "formatter": "var",
       "stream": "ext://sys.stdout",
@@ -238,7 +238,7 @@ LOG_CONFIG = {
   "loggers": {
     "root": {
       "level": "DEBUG", 
-      "handlers": [ "warning", "error", "success", "header", "title", "debug", "info", "out", "reading", "writing" ]
+      "handlers": [ "warning", "error", "success", "header", "title", "debug", "info", "out", "reading", "writing", "var" ]
     }
   }
 }
