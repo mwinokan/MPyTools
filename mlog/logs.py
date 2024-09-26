@@ -84,6 +84,7 @@ class VarFormatter(logging.Formatter):
         value = None
         color = ''
         unit = None
+        append = None
 
         variable = record.msg
         if record.args:
@@ -96,13 +97,24 @@ class VarFormatter(logging.Formatter):
             if 'color' in kwargs:
               color = getattr(mcol, kwargs['color'])
 
+            elif 'colour' in kwargs:
+              color = getattr(mcol, kwargs['colour'])
+
             if 'unit' in kwargs:
               unit = kwargs['unit']
 
+            if 'append' in kwargs:
+              append = kwargs['append']
+
+        s = f'{mcol.varName}{variable}{mcol.clear} = {color}{value}{mcol.clear}'
+
         if unit:
-          return f'{mcol.varName}{variable}{mcol.clear} = {color}{value} {mcol.varType}{unit}{mcol.clear}'
-        else:
-          return f'{mcol.varName}{variable}{mcol.clear} = {color}{value}{mcol.clear}'
+          s += f'{mcol.varType}{unit}{mcol.clear}'
+
+        if unit:
+          s += append
+        
+        return s
 
 LOG_CONFIG = {
   "version": 1,
