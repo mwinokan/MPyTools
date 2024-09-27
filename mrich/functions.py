@@ -1,5 +1,6 @@
 from .console import console
 from rich.text import Text
+from .colors import COLOR_LOOKUP
 
 ### LOG
 
@@ -52,7 +53,11 @@ def writing(message):
     return disk(message, "Writing")
 
 
-def var(variable, value, unit=None, separator="=", colour="magenta"):
+def var(variable, value, unit=None, separator="=", color: str | None = None):
+
+    if color and color in COLOR_LOOKUP:
+        color = COLOR_LOOKUP[color]
+    
     value = str(value)
     if unit:
         unit = str(unit)
@@ -66,6 +71,8 @@ def var(variable, value, unit=None, separator="=", colour="magenta"):
     else:
         text = Text(f"{variable} {separator} {value}")
         text.stylize("steel_blue1", 0, len(variable))
+    
+    text.stylize(color, len(variable) + len(separator) + 2, len(variable) + len(separator) + 2 + len(value))
 
     # text.stylize("bright_yellow", 8+len(prefix), 8+len(prefix)+len(message))
     return console.print(text)
