@@ -36,4 +36,4 @@ with mrich.loading('Loading...'):
 with mrich.clock('Loading...'):
 	time.sleep(2)
 
-
+raise NotImplementedError
