@@ -55,27 +55,25 @@ def writing(message):
 
 def var(variable, value, unit=None, separator="=", color: str | None = None):
 
+    variable = Text(variable, style=COLOR_LOOKUP["var_name"])
+    variable.stylize("bold")
+
+    if "Path" in str(type(value)):
+        color = "file"
+
     if color and color in COLOR_LOOKUP:
         color = COLOR_LOOKUP[color]
-    
-    value = str(value)
-    if unit:
-        unit = str(unit)
-        text = Text(f"{variable} {separator} {value} {unit}")
-        text.stylize("steel_blue1", 0, len(variable))
-        text.stylize(
-            "steel_blue1",
-            len(variable) + len(separator) + 2 + len(value),
-            len(variable) + len(separator) + 3 + len(value) + len(unit),
-        )
-    else:
-        text = Text(f"{variable} {separator} {value}")
-        text.stylize("steel_blue1", 0, len(variable))
-    
-    text.stylize(color, len(variable) + len(separator) + 2, len(variable) + len(separator) + 2 + len(value))
 
-    # text.stylize("bright_yellow", 8+len(prefix), 8+len(prefix)+len(message))
-    return console.print(text)
+    if color:
+        value = Text(str(value), style=color)
+
+    objects = [variable, separator, value]
+
+    if unit:
+        unit = Text(unit, style=COLOR_LOOKUP["var_type"])
+        objects.append(unit)
+
+    console.print(*objects, markup=True, highlight=True)
 
 
 ### STYLES
