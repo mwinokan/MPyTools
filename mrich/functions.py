@@ -53,7 +53,15 @@ def writing(message):
     return disk(message, "Writing")
 
 
-def var(variable, value, unit=None, separator="=", color: str | None = None):
+def var(
+    variable,
+    value,
+    unit: str | None = None,
+    separator: str = "=",
+    color: str | None = None,
+    highlight: bool = True,
+    highlight_if_rich_dunder: bool = False
+):
 
     variable = Text(variable, style=COLOR_LOOKUP["var_name"])
     variable.stylize("bold")
@@ -64,6 +72,9 @@ def var(variable, value, unit=None, separator="=", color: str | None = None):
     if color and color in COLOR_LOOKUP:
         color = COLOR_LOOKUP[color]
 
+    if hasattr(value, '__rich__'):
+        highlight = highlight_if_rich_dunder
+    
     if color:
         value = Text(str(value), style=color)
 
@@ -73,7 +84,7 @@ def var(variable, value, unit=None, separator="=", color: str | None = None):
         unit = Text(unit, style=COLOR_LOOKUP["var_type"])
         objects.append(unit)
 
-    console.print(*objects, markup=True, highlight=True)
+    console.print(*objects, markup=True, highlight=highlight)
 
 
 ### STYLES
