@@ -38,7 +38,8 @@ def title(message):
     return console.print(text)
 
 
-def disk(message, prefix):
+def disk(message: str, prefix: str):
+    message = str(message)
     text = Text(f" DISK  {prefix} {message}...")
     text.stylize("bright_yellow reverse bold", 0, 6)
     text.stylize("bright_yellow", 8 + len(prefix), 8 + len(prefix) + len(message))
@@ -60,7 +61,7 @@ def var(
     separator: str = "=",
     color: str | None = None,
     highlight: bool = True,
-    highlight_if_rich_dunder: bool = False
+    highlight_if_rich_dunder: bool = False,
 ):
 
     variable = Text(variable, style=COLOR_LOOKUP["var_name"])

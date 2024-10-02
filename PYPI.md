@@ -18,7 +18,7 @@ pip install $MPYTOOLS/dist/mpytools-0.0.4-py3-none-any.whl
 
 ### UPLOAD
 
-python -m twine upload dist/*-0.0.5*
+python -m twine upload dist/*-0.0.14*
 
 ### deps:
 
