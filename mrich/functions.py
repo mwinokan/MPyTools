@@ -3,21 +3,48 @@ from rich.text import Text
 from .colors import COLOR_LOOKUP
 from .tools import detect_format_prefix, strip_formats
 
+### STYLES
+
+
+def bold(message):
+    text = Text(message)
+    text.stylize("bold")
+    return console.print(text)
+
+
+def italic(message):
+    text = Text(message)
+    text.stylize("italic")
+    return console.print(text)
+
+
+def underline(message):
+    text = Text(message)
+    text.stylize("underline")
+    return console.print(text)
+
+
 ### LOG
 
-def warning(message):
-    text = Text(f" Warning  {message}!")
+def warning(*messages):
+    text = " Warning "
+    text, formats = strip_formats(*messages, text=text, **kwargs)
+    text = Text(f"{text}!")
     text.stylize("warning")
     text.stylize("reverse bold", 0, 9)
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
 
-
-def error(message):
-    text = Text(f" ERROR  {message}!")
+def error(*messages):
+    text = " ERROR "
+    text, formats = strip_formats(*messages, text=text, **kwargs)
+    text = Text(f"{text}!")
     text.stylize("error")
-    text.stylize("reverse", 0, 7)
+    text.stylize("reverse", 0, 9)
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
-
 
 def success(*messages, **kwargs):
     text = " Success "
@@ -25,22 +52,27 @@ def success(*messages, **kwargs):
     text = Text(f"{text}!")
     text.stylize("success")
     text.stylize("reverse", 0, 9)
-    # text.stylize("on bright_white", 0, 9)
     for style, start, end in formats:
         text.stylize(style, start, end)
     return console.print(text)
 
-def debug(message):
-    text = Text(f"DEBUG: {message}")
+def debug(*messages):
+    text = "DEBUG:"
+    text, formats = strip_formats(*messages, text=text, **kwargs)
+    text = Text(f"{text}")
     text.stylize("debug")
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
 
-
-def title(message):
-    text = Text(f">>> {message}")
+def title(*messages):
+    text = ">>>"
+    text, formats = strip_formats(*messages, text=text, **kwargs)
+    text = Text(f"{text}")
     text.stylize("bold purple")
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
-
 
 def disk(message: str, *, prefix: str):
     message = str(message)
@@ -91,27 +123,6 @@ def var(
         objects.append(unit)
 
     console.print(*objects, markup=True, highlight=highlight)
-
-
-### STYLES
-
-
-def bold(message):
-    text = Text(message)
-    text.stylize("bold")
-    return console.print(text)
-
-
-def italic(message):
-    text = Text(message)
-    text.stylize("italic")
-    return console.print(text)
-
-
-def underline(message):
-    text = Text(message)
-    text.stylize("underline")
-    return console.print(text)
 
 
 ### HEADINGS
