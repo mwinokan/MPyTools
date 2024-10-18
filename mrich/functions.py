@@ -84,11 +84,11 @@ def disk(message: str, *, prefix: str):
 
 
 def reading(message):
-    return disk(message, "Reading")
+    return disk(message, prefix="Reading")
 
 
 def writing(message):
-    return disk(message, "Writing")
+    return disk(message, prefix="Writing")
 
 
 def var(
