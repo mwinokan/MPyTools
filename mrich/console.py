@@ -1,6 +1,7 @@
 from rich.console import Console
+from .colors import THEME
 
-console = Console()
+console = Console(theme=THEME)
 
 from rich.traceback import install
 

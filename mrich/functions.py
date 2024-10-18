@@ -1,34 +1,38 @@
 from .console import console
 from rich.text import Text
 from .colors import COLOR_LOOKUP
+from .tools import detect_format_prefix, strip_formats
 
 ### LOG
 
-
 def warning(message):
     text = Text(f" Warning  {message}!")
-    text.stylize("orange_red1")
+    text.stylize("warning")
     text.stylize("reverse bold", 0, 9)
     return console.print(text)
 
 
 def error(message):
     text = Text(f" ERROR  {message}!")
-    text.stylize("bold bright_red")
+    text.stylize("error")
     text.stylize("reverse", 0, 7)
     return console.print(text)
 
 
-def success(message):
-    text = Text(f" Success  {message}!")
-    text.stylize("bold bright_green")
+def success(*messages, **kwargs):
+    text = " Success "
+    text, formats = strip_formats(*messages, text=text, **kwargs)
+    text = Text(f"{text}!")
+    text.stylize("success")
     text.stylize("reverse", 0, 9)
+    # text.stylize("on bright_white", 0, 9)
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
-
 
 def debug(message):
     text = Text(f"DEBUG: {message}")
-    text.stylize("bright_black")
+    text.stylize("debug")
     return console.print(text)
 
 
@@ -38,11 +42,12 @@ def title(message):
     return console.print(text)
 
 
-def disk(message: str, prefix: str):
+def disk(message: str, *, prefix: str):
     message = str(message)
     text = Text(f" DISK  {prefix} {message}...")
-    text.stylize("bright_yellow reverse bold", 0, 6)
-    text.stylize("bright_yellow", 8 + len(prefix), 8 + len(prefix) + len(message))
+    text.stylize("file", 0, 6)
+    text.stylize("reverse bold", 0, 6)
+    text.stylize("file", 8 + len(prefix), 8 + len(prefix) + len(message))
     return console.print(text)
 
 
