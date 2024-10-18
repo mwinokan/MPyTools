@@ -6,27 +6,34 @@ from .tools import detect_format_prefix, strip_formats
 ### STYLES
 
 
-def bold(message):
-    text = Text(message)
+def bold(*messages, **kwargs):
+    text, formats = strip_formats(*messages, **kwargs)
+    text = Text(text)
     text.stylize("bold")
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
 
-
-def italic(message):
-    text = Text(message)
+def italic(*messages, **kwargs):
+    text, formats = strip_formats(*messages, **kwargs)
+    text = Text(text)
     text.stylize("italic")
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
 
-
-def underline(message):
-    text = Text(message)
+def underline(*messages, **kwargs):
+    text, formats = strip_formats(*messages, **kwargs)
+    text = Text(text)
     text.stylize("underline")
+    for style, start, end in formats:
+        text.stylize(style, start, end)
     return console.print(text)
 
 
 ### LOG
 
-def warning(*messages):
+def warning(*messages, **kwargs):
     text = " Warning "
     text, formats = strip_formats(*messages, text=text, **kwargs)
     text = Text(f"{text}!")
@@ -36,7 +43,7 @@ def warning(*messages):
         text.stylize(style, start, end)
     return console.print(text)
 
-def error(*messages):
+def error(*messages, **kwargs):
     text = " ERROR "
     text, formats = strip_formats(*messages, text=text, **kwargs)
     text = Text(f"{text}!")
@@ -56,7 +63,7 @@ def success(*messages, **kwargs):
         text.stylize(style, start, end)
     return console.print(text)
 
-def debug(*messages):
+def debug(*messages, **kwargs):
     text = "DEBUG:"
     text, formats = strip_formats(*messages, text=text, **kwargs)
     text = Text(f"{text}")
@@ -65,7 +72,7 @@ def debug(*messages):
         text.stylize(style, start, end)
     return console.print(text)
 
-def title(*messages):
+def title(*messages, **kwargs):
     text = ">>>"
     text, formats = strip_formats(*messages, text=text, **kwargs)
     text = Text(f"{text}")

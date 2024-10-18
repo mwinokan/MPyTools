@@ -6,10 +6,10 @@ COLOR_LOOKUP = {
 	"result": "cornflower_blue",
 	"success": "bold green",
 	"error": "bold red",
-	"warning": "orange_red1",
+	"warning": "dark_orange",
 	"arg": "cyan3",
 	"debug": "bright_black",
 }
 
 from rich.theme import Theme
-THEME = Theme(COLOR_LOOKUP)
+THEME = Theme(COLOR_LOOKUP, inherit=True)
