@@ -14,6 +14,12 @@ def strip_formats(*messages, text="", separator=" "):
     formats = []
     start = len(text) + 1
     for message in messages:
+
+        if hasattr(message, "__rich__"):
+            message = message.__rich__()
+        else:
+            message = str(message)
+
         prefix = detect_format_prefix(message)
 
         prefix_found = prefix is not None
