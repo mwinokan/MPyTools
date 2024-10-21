@@ -48,7 +48,7 @@ def error(*messages, **kwargs):
     text, formats = strip_formats(*messages, text=text, **kwargs)
     text = Text(f"{text}!")
     text.stylize("error")
-    text.stylize("reverse", 0, 9)
+    text.stylize("reverse", 0, 7)
     for style, start, end in formats:
         text.stylize(style, start, end)
     return console_print(text)
