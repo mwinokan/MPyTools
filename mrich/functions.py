@@ -1,7 +1,7 @@
-from .console import console
+from .console import console, console_print
 from rich.text import Text
 from .colors import COLOR_LOOKUP
-from .tools import detect_format_prefix, strip_formats
+from .tools import strip_formats
 
 ### STYLES
 
@@ -12,7 +12,7 @@ def bold(*messages, **kwargs):
     text.stylize("bold")
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 def italic(*messages, **kwargs):
     text, formats = strip_formats(*messages, **kwargs)
@@ -20,7 +20,7 @@ def italic(*messages, **kwargs):
     text.stylize("italic")
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 def underline(*messages, **kwargs):
     text, formats = strip_formats(*messages, **kwargs)
@@ -28,7 +28,7 @@ def underline(*messages, **kwargs):
     text.stylize("underline")
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 
 ### LOG
@@ -41,7 +41,7 @@ def warning(*messages, **kwargs):
     text.stylize("reverse bold", 0, 9)
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 def error(*messages, **kwargs):
     text = " ERROR "
@@ -51,7 +51,7 @@ def error(*messages, **kwargs):
     text.stylize("reverse", 0, 9)
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 def success(*messages, **kwargs):
     text = " Success "
@@ -61,7 +61,7 @@ def success(*messages, **kwargs):
     text.stylize("reverse", 0, 9)
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 def debug(*messages, **kwargs):
     text = "DEBUG:"
@@ -70,7 +70,7 @@ def debug(*messages, **kwargs):
     text.stylize("debug")
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 def title(*messages, **kwargs):
     text = ">>>"
@@ -79,7 +79,7 @@ def title(*messages, **kwargs):
     text.stylize("bold purple")
     for style, start, end in formats:
         text.stylize(style, start, end)
-    return console.print(text)
+    return console_print(text)
 
 def disk(message: str, *, prefix: str):
     message = str(message)
@@ -87,7 +87,7 @@ def disk(message: str, *, prefix: str):
     text.stylize("file", 0, 6)
     text.stylize("reverse bold", 0, 6)
     text.stylize("file", 8 + len(prefix), 8 + len(prefix) + len(message))
-    return console.print(text)
+    return console_print(text)
 
 
 def reading(message):
