@@ -1,8 +1,8 @@
-from .console import console
+from .console import console, console_print
 
 # wrappers
 def print(*args, **kwargs):
-    console.print(*args, **kwargs)
+    console_print(*args, **kwargs)
 
 
 def out(*args, **kwargs):
