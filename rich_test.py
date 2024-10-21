@@ -33,5 +33,7 @@ with mrich.clock('Loading...'):
 
 for i in mrich.track(range(20), prefix='Sleeping zzzzz...'):
 	time.sleep(0.2)
+	if i == 3:
+		mrich.warning("interruption!")
 
 raise NotImplementedError
