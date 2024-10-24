@@ -108,7 +108,7 @@ def var(
     highlight_if_rich_dunder: bool = False,
 ):
 
-    variable = Text(variable, style=COLOR_LOOKUP["var_name"])
+    variable = Text(str(variable), style=COLOR_LOOKUP["var_name"])
     variable.stylize("bold")
 
     if "Path" in str(type(value)):
