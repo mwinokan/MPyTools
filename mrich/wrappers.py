@@ -31,7 +31,12 @@ def track(*args, prefix: str = "Working...", **kwargs):
     console = Console(theme=THEME)
 
     CURRENT_PROGRESS = Progress(
-        *Progress.get_default_columns(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TaskProgressColumn(),
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+        TextColumn("{task.fields}"),
         console=console,
     )
 
@@ -40,3 +45,12 @@ def track(*args, prefix: str = "Working...", **kwargs):
             *args, description=prefix, **kwargs
         )
     
+def set_progress_field(key, value):
+    progress = CURRENT_PROGRESS
+    task = progress.tasks[0]
+    task.fields[key] = value
+
+def set_progress_prefix(text):
+    progress = CURRENT_PROGRESS
+    task = progress.tasks[0]
+    task.description = text

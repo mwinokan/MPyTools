@@ -26,14 +26,35 @@ mrich.h3("header 3")
 
 import time
 
-with mrich.loading('Loading...'):
-	time.sleep(2)
-with mrich.clock('Loading...'):
-	time.sleep(2)
+# with mrich.loading('Loading...'):
+# 	time.sleep(2)
+# with mrich.clock('Loading...'):
+# 	time.sleep(2)
 
-for i in mrich.track(range(20), prefix='Sleeping zzzzz...'):
+for i in mrich.track(range(50), prefix='Sleeping zzzzz...'):
 	time.sleep(0.2)
+
+	mrich.set_progress_field("i", i)
+
 	if i == 3:
 		mrich.warning("interruption!")
+		mrich.set_progress_prefix("Post-interruption")
 
-raise NotImplementedError
+# raise NotImplementedError
+
+# from rich.progress import *
+
+# progress = Progress(
+#     SpinnerColumn(),
+#     *Progress.get_default_columns(),
+#     TimeElapsedColumn(),
+#     TextColumn("{task.fields}"),
+# )
+
+# with progress:
+# 	for n in progress.track(range(100)):
+# 		# progress.print(n)
+
+# 		progress.tasks[0].fields["n"] = n
+
+# 		time.sleep(0.1)
