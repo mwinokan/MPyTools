@@ -34,7 +34,9 @@ import time
 for i in mrich.track(range(50), prefix='Sleeping zzzzz...'):
 	time.sleep(0.2)
 
-	mrich.set_progress_field("i", i)
+	# mrich.set_progress_field("i", i)
+	# mrich.set_progress_field(i=i)
+	mrich.set_progress_suffix(i)
 
 	if i == 3:
 		mrich.warning("interruption!")

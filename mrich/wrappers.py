@@ -37,20 +37,33 @@ def track(*args, prefix: str = "Working...", **kwargs):
         TimeElapsedColumn(),
         TimeRemainingColumn(),
         TextColumn("{task.fields}"),
+        # TextColumn("{task.fields[suffix]}"),
         console=console,
     )
+
+    # CURRENT_PROGRESS.tasks[0].fields["suffix"] = ""
 
     with CURRENT_PROGRESS:
         yield from CURRENT_PROGRESS.track(
             *args, description=prefix, **kwargs
         )
     
-def set_progress_field(key, value):
+def set_progress_field(key: str = None, value = None, **kwargs):
     progress = CURRENT_PROGRESS
     task = progress.tasks[0]
-    task.fields[key] = value
+    
+    if kwargs:
+        for key,value in kwargs.items():
+            task.fields[key] = value
+    else:
+        task.fields[key] = value
 
 def set_progress_prefix(text):
     progress = CURRENT_PROGRESS
     task = progress.tasks[0]
     task.description = text
+
+# def set_progress_suffix(text):
+#     set_progress_field("suffix", text)
+    # task = progress.tasks[0]
+    # task.description = text
