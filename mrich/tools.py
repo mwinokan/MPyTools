@@ -1,5 +1,5 @@
-
 import re
+
 
 def detect_format_prefix(message):
 
@@ -9,6 +9,7 @@ def detect_format_prefix(message):
         match = match.group()
 
     return match
+
 
 def strip_formats(*messages, text="", separator=" "):
     formats = []
@@ -26,14 +27,14 @@ def strip_formats(*messages, text="", separator=" "):
 
         if prefix_found:
             message = message.removeprefix(prefix)
-            prefix = prefix.removeprefix('[').removesuffix(']')
+            prefix = prefix.removeprefix("[").removesuffix("]")
 
         end = start + len(message)
         text += separator + message
-        
+
         if prefix_found:
-            formats.append((prefix, start, end+2))
-            
+            formats.append((prefix, start, end + 2))
+
         start = end
 
     return text, formats

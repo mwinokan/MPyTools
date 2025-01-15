@@ -14,6 +14,7 @@ def bold(*messages, **kwargs):
         text.stylize(style, start, end)
     return console_print(text)
 
+
 def italic(*messages, **kwargs):
     text, formats = strip_formats(*messages, **kwargs)
     text = Text(text)
@@ -21,6 +22,7 @@ def italic(*messages, **kwargs):
     for style, start, end in formats:
         text.stylize(style, start, end)
     return console_print(text)
+
 
 def underline(*messages, **kwargs):
     text, formats = strip_formats(*messages, **kwargs)
@@ -33,6 +35,7 @@ def underline(*messages, **kwargs):
 
 ### LOG
 
+
 def warning(*messages, **kwargs):
     text = " Warning "
     text, formats = strip_formats(*messages, text=text, **kwargs)
@@ -42,6 +45,7 @@ def warning(*messages, **kwargs):
     for style, start, end in formats:
         text.stylize(style, start, end)
     return console_print(text)
+
 
 def error(*messages, **kwargs):
     text = " ERROR "
@@ -53,6 +57,7 @@ def error(*messages, **kwargs):
         text.stylize(style, start, end)
     return console_print(text)
 
+
 def success(*messages, **kwargs):
     text = " Success "
     text, formats = strip_formats(*messages, text=text, **kwargs)
@@ -63,6 +68,7 @@ def success(*messages, **kwargs):
         text.stylize(style, start, end)
     return console_print(text)
 
+
 def debug(*messages, **kwargs):
     text = "DEBUG:"
     text, formats = strip_formats(*messages, text=text, **kwargs)
@@ -72,6 +78,7 @@ def debug(*messages, **kwargs):
         text.stylize(style, start, end)
     return console_print(text)
 
+
 def title(*messages, **kwargs):
     text = ">>>"
     text, formats = strip_formats(*messages, text=text, **kwargs)
@@ -80,6 +87,7 @@ def title(*messages, **kwargs):
     for style, start, end in formats:
         text.stylize(style, start, end)
     return console_print(text)
+
 
 def disk(message: str, *, prefix: str):
     message = str(message)
@@ -117,9 +125,9 @@ def var(
     if color and color in COLOR_LOOKUP:
         color = COLOR_LOOKUP[color]
 
-    if hasattr(value, '__rich__'):
+    if hasattr(value, "__rich__"):
         highlight = highlight_if_rich_dunder
-    
+
     if color:
         value = Text(str(value), style=color)
 
