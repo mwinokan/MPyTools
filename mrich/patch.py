@@ -1,6 +1,8 @@
 from IPython import get_ipython
 
-if "IPKernelApp" in get_ipython().config:  # Checks for Jupyter kernel
+d = get_ipython()
+
+if d and "IPKernelApp" in d.config:  # Checks for Jupyter kernel
 
     from rich.jupyter import JUPYTER_HTML_FORMAT
 
