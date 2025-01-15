@@ -3,7 +3,7 @@ import re
 
 def detect_format_prefix(message):
 
-    match = re.match(f"^\[.*?\]", message)
+    match = re.match(r"^\[.*?\]", message)
 
     if match:
         match = match.group()
