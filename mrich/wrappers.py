@@ -1,10 +1,21 @@
+
+from pandas import DataFrame
 from .console import console, console_print
 
 
 # wrappers
 def print(*args, **kwargs):
-    console_print(*args, **kwargs)
 
+    if isinstance(args[0], DataFrame):
+        from .df import df_to_table
+        table = df_to_table(args[0])
+        console_print(table)
+
+        if args[1:]:
+            print(args[1:], **kwargs)
+
+    else:
+        console_print(*args, **kwargs)
 
 def out(*args, **kwargs):
     console.out(*args, **kwargs)
