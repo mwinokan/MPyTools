@@ -1,21 +1,34 @@
 from pandas import DataFrame
 from .console import console, console_print
 
+dict_keys = type(dict().keys())
+
 
 # wrappers
 def print(*args, **kwargs):
 
-    if isinstance(args[0], DataFrame):
-        from .df import df_to_table
+    new_args = []
 
-        table = df_to_table(args[0])
-        console_print(table)
+    for arg in args:
 
-        if args[1:]:
-            print(args[1:], **kwargs)
+        if isinstance(arg, DataFrame):
+            from .df import df_to_table
 
-    else:
-        console_print(*args, **kwargs)
+            table = df_to_table(args[0])
+            # console_print(table)
+            new_args.append(table)
+
+            # if args[1:]:
+            # print(args[1:], **kwargs)
+
+        elif isinstance(arg, dict_keys):
+
+            new_args.append(list(arg))
+
+        else:
+            new_args.append(arg)
+
+    console_print(*new_args, **kwargs)
 
 
 def out(*args, **kwargs):
