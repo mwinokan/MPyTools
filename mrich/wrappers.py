@@ -1,4 +1,4 @@
-from pandas import DataFrame
+from pandas import DataFrame, Index
 from .console import console, console_print
 
 dict_keys = type(dict().keys())
@@ -22,8 +22,9 @@ def print(*args, **kwargs):
             # print(args[1:], **kwargs)
 
         elif isinstance(arg, dict_keys):
-
-            new_args.append(list(arg))
+            new_args.append(set(arg))
+        elif isinstance(arg, Index):
+            new_args.append(set(arg))
 
         else:
             new_args.append(arg)
