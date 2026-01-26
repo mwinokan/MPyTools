@@ -1,16 +1,19 @@
-from IPython import get_ipython
 
-d = get_ipython()
+try:
+    from IPython import get_ipython
 
-if d and "IPKernelApp" in d.config:  # Checks for Jupyter kernel
-
-    from rich.jupyter import JUPYTER_HTML_FORMAT
-
-    if "margin:0px" not in JUPYTER_HTML_FORMAT:
-        print(
-            "mrich: Jupyter may show unwanted line-spacing, run `mrich.patch_rich_jupyter_margins()` to patch"
-        )
-
+    d = get_ipython()
+    
+    if d and "IPKernelApp" in d.config:  # Checks for Jupyter kernel
+    
+        from rich.jupyter import JUPYTER_HTML_FORMAT
+    
+        if "margin:0px" not in JUPYTER_HTML_FORMAT:
+            print(
+                "mrich: Jupyter may show unwanted line-spacing, run `mrich.patch_rich_jupyter_margins()` to patch"
+            )
+except:
+    pass
 
 def patch_rich_jupyter_margins():
 
