@@ -1,4 +1,3 @@
-
 from .output import out
 from .output import varOut
 from .output import var
@@ -25,12 +24,12 @@ from .progress import interrupt
 from .deco import debug_log, debug_time
 from .testing import TestStatus
 
-from .convert import toPrecision # documentation missing
-from .convert import str2bool # documentation missing
+from .convert import toPrecision  # documentation missing
+from .convert import str2bool  # documentation missing
 
-from .fileio import append2file # documentation missing
-from .fileio import write2file # documentation missing
-from .fileio import array2file # documentation missing
+from .fileio import append2file  # documentation missing
+from .fileio import write2file  # documentation missing
+from .fileio import array2file  # documentation missing
 
 from .print import blockPrint
 from .print import enablePrint

@@ -1,12 +1,11 @@
-    
 import re
 from plotly.offline import plot
 
-def fig_html(fig,include_plotlyjs=False,customdata_callback=False):
+
+def fig_html(fig, include_plotlyjs=False, customdata_callback=False):
 
     # Get HTML representation of plotly.js and this figure
-    plot_div = plot(fig, output_type='div', include_plotlyjs=include_plotlyjs)
-
+    plot_div = plot(fig, output_type="div", include_plotlyjs=include_plotlyjs)
 
     if customdata_callback:
         # Get id of html div element that looks like
@@ -15,7 +14,7 @@ def fig_html(fig,include_plotlyjs=False,customdata_callback=False):
         div_id = res.groups()[0]
 
         # Build JavaScript callback for handling clicks
-        # and opening the URL in the trace's customdata 
+        # and opening the URL in the trace's customdata
         js_callback = """
         <script>
         var plot_element = document.getElementById("{div_id}");
